@@ -1,0 +1,8 @@
+{
+    "name": "Car Import",
+    "namespace": "Botble\\CarImport\\",
+    "provider": "Botble\\CarImport\\Providers\\CarImportServiceProvider",
+    "author": "Sajid",
+    "version": "1.0",
+    "description": "Import cars via CSV file"
+}
