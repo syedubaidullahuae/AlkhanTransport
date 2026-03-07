@@ -10,10 +10,11 @@
         <x-core::icon name="ti ti-calendar" size="xs" />
     </div>
 </div>
-<div class="item-line-booking">
+<div class="item-line-booking border-bottom-0 pb-0">
     <strong class="text-md-bold neutral-1000">{{ __('Drop-Off') }}</strong>
     <div class="input-calendar">
         <input class="form-control calendar-date" type="text"  name="rental_end_date" value="{{ $endDate }}">
         <x-core::icon name="ti ti-calendar" size="xs" />
     </div>
 </div>
+<hr>

@@ -71,8 +71,15 @@ class CarRequest extends Request
             'horsepower' => ['nullable', 'numeric', 'min:0', 'max:10000'],
             'number_of_seats' => ['nullable', 'int', 'min:0', 'max:10000'],
             'number_of_doors' => ['nullable', 'int', 'min:0', 'max:10000'],
+            'luggage_capacity' => ['nullable', 'int', 'min:0', 'max:10000'],
             'car_purpose' => ['nullable', 'string', Rule::in(['rent', 'sale'])],
             'rental_rate' => [
+                'numeric',
+                'min:0',
+                'max:1000000000',
+                Rule::requiredIf(fn () => $isForRent),
+            ],
+            'monthly_rent' => [
                 'numeric',
                 'min:0',
                 'max:1000000000',

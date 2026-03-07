@@ -94,5 +94,20 @@
                 </div>
             </div>
         @endif
+
+        @if ($luggage_capacity = $car->luggage_capacity)
+            <div class="item-feature-car w-md-25">
+                <div class="item-feature-car-inner">
+                    <div class="feature-image">
+                        <x-core::icon name="ti ti-luggage" class="icon-luggage" />
+                    </div>
+
+                    <div class="feature-info">
+                        <p class="text-md-medium neutral-1000">{{ __(':number Luggage', ['number' => $luggage_capacity]) }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
+

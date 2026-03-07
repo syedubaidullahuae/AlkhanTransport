@@ -142,7 +142,7 @@ class CarForm extends FormAbstract
             ->add('content', EditorField::class, ContentFieldOption::make()->colspan(2))
             ->when(
                 is_plugin_active('location'),
-                fn (FormAbstract $form) => $form
+                fn(FormAbstract $form) => $form
                     ->add('location_divider', HtmlField::class, HtmlFieldOption::make()->content('<div class="col-lg-12">'))
                     ->add(
                         'location_data',
@@ -154,7 +154,7 @@ class CarForm extends FormAbstract
             )
             ->when(
                 ! is_plugin_active('location'),
-                fn (FormAbstract $form) => $form->add(
+                fn(FormAbstract $form) => $form->add(
                     'location',
                     TextField::class,
                     TextFieldOption::make()
@@ -228,6 +228,13 @@ class CarForm extends FormAbstract
                     ])
                     ->required()
             )
+
+            ->add('monthly_rent', TextField::class, [
+                'label' => 'Monthly Rent',
+                'attr' => [
+                    'placeholder' => 'Enter monthly rent',
+                ],
+            ])
             ->add(
                 'tax_id',
                 SelectField::class,
@@ -238,7 +245,7 @@ class CarForm extends FormAbstract
             )
             ->when(
                 get_car_rentals_setting('enable_off_site_booking', true),
-                fn (FormAbstract $form) => $form->add(
+                fn(FormAbstract $form) => $form->add(
                     'external_booking_url',
                     TextField::class,
                     TextFieldOption::make()
@@ -417,6 +424,12 @@ class CarForm extends FormAbstract
                     ->min(0)
                     ->placeholder(trans('plugins/car-rentals::car-rentals.car.placeholders.number_of_doors'))
             )
+            ->add('luggage_capacity', NumberField::class, [
+                'label' => 'Luggage Capacity',
+                'attr' => [
+                    'placeholder' => 'Enter luggage capacity',
+                ],
+            ])
             ->add(
                 'insurance_info',
                 TextField::class,

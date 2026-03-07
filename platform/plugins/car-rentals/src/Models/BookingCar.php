@@ -24,6 +24,7 @@ class BookingCar extends BaseModel
         'car_id',
         'pickup_city_id',
         'return_city_id',
+        'no_of_months',
     ];
 
     protected $casts = [

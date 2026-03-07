@@ -11,9 +11,12 @@ use Botble\Base\Forms\FieldOptions\SelectFieldOption;
 use Botble\Base\Forms\Fields\DateField;
 use Botble\Base\Forms\Fields\HtmlField;
 use Botble\Base\Forms\Fields\MultiCheckListField;
+use Botble\Base\Forms\Fields\NumberField;
 use Botble\Base\Forms\Fields\SelectField;
+use Botble\Base\Forms\FormAbstract;
 use Botble\CarRentals\Facades\CarRentalsHelper;
 use Botble\CarRentals\Forms\Fronts\Auth\FieldOptions\TextFieldOption;
+use Botble\Base\Forms\Fields\TextField;
 use Botble\CarRentals\Http\Requests\Fronts\BookingRequest;
 use Botble\CarRentals\Models\Booking;
 use Botble\CarRentals\Models\Car;
@@ -67,12 +70,12 @@ class BookingForm extends FormFront
 
         $taxAmount = $car->calculateTaxAmount($rentalPrice);
         $taxInfo = $car->getTaxInfo($taxAmount);
-        $totalAmount = $rentalPrice + $taxAmount;
+        $totalAmount = $rentalPrice + $taxAmount ;
 
         $services = Service::query()->select(['id', 'name', 'price', 'currency_id'])->wherePublished()->get();
 
         $serviceOptions = [];
-
+       
         foreach ($services as $service) {
             $serviceOptions[$service->id] = $service->name . ' - ' . $service->price_text;
         }
@@ -86,9 +89,11 @@ class BookingForm extends FormFront
             }
         }
 
+        $customer = auth('customer')->user();
+
         $this
             ->contentOnly()
-            ->setUrl(route('public.booking'))
+            ->setUrl(route('public.checkout.post'))
             ->model(Booking::class)
             ->setValidatorClass(BookingRequest::class)
             ->setFormOption('class', 'booking-form')
@@ -100,6 +105,28 @@ class BookingForm extends FormFront
                     ->value($carId)
             )
             ->add(
+                'rent_type',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label(__('Rent Type'))
+                    ->choices([
+                        'daily' => __('Daily Rent'),
+                        'monthly' => __('Monthly Rent'),
+                    ])
+                    ->selected('daily')
+                    ->required()
+            )
+
+            ->add('no_of_months',
+                 NumberField::class, [
+                'label' => 'Number of Months',
+                'value' => 1,
+                'attr' => [
+                    'placeholder' => 'Enter number of months',
+                ],
+            ])
+            
+            ->add(
                 'rental_start_date',
                 DateField::class,
                 DatePickerFieldOption::make()
@@ -107,15 +134,7 @@ class BookingForm extends FormFront
                     ->value($startDate)
                     ->required()
             )
-            ->add(
-                'rental_start_time',
-                SelectField::class,
-                SelectFieldOption::make()
-                    ->label(__('Start Time'))
-                    ->choices($timeOptions)
-                    ->selected($startTime)
-                    ->required()
-            )
+           
             ->add(
                 'rental_end_date',
                 DateField::class,
@@ -125,22 +144,51 @@ class BookingForm extends FormFront
                     ->required()
             )
             ->add(
-                'rental_end_time',
-                SelectField::class,
-                SelectFieldOption::make()
-                    ->label(__('End Time'))
-                    ->choices($timeOptions)
-                    ->selected($endTime)
+                'customer_name',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Full Name'))
+                    ->placeholder(__('Enter your full name'))
+                    ->colspan(2)
                     ->required()
+                    ->when($customer, function (TextFieldOption $option) use ($customer): void {
+                        $option->value($customer->name);
+                    })
             )
             ->add(
-                'service_ids[]',
-                MultiCheckListField::class,
-                MultiChecklistFieldOption::make()
-                    ->label(__('Additional Services'))
-                    ->choices($serviceOptions)
-                    ->colspan(2)
+                'customer_email',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Email'))
+                    ->placeholder(__('Enter your email'))
+                    ->required()
+                    ->when($customer, function (TextFieldOption $option) use ($customer): void {
+                        $option->value($customer->email);
+                    })
             )
+            ->add(
+                'customer_phone',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Phone'))
+                    ->placeholder(__('Enter your phone number'))
+                    ->required()
+                    ->when($customer, function (TextFieldOption $option) use ($customer): void {
+                        $option->value($customer->phone);
+                    })
+            )
+             
+            
+            ->when(!empty($serviceOptions), function (FormAbstract $form) use ($serviceOptions) {
+                $form->add(
+                    'service_ids[]',
+                    MultiCheckListField::class,
+                    MultiChecklistFieldOption::make()
+                        ->label(__('Additional Services'))
+                        ->choices($serviceOptions)
+                        ->colspan(2)
+                );
+            })
             ->add('border_wrapper_after', HtmlField::class, HtmlFieldOption::make()->content('<div class="border-wrapper-after"></div>')->colspan(2))
             ->add(
                 'total_estimate',

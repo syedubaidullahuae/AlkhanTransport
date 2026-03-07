@@ -249,7 +249,7 @@ app()->booted(function (): void {
                 ->remove('rental_start_date')
                 ->remove('rental_end_date')
                 ->addAfter(
-                    'car_id',
+                    'no_of_months',
                     'rental_start_html',
                     HtmlField::class,
                     HtmlFieldOption::make()

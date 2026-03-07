@@ -495,23 +495,26 @@ class PublicController extends BaseController
 
     public function postCheckout(CheckoutRequest $request)
     {
+       
         $sessionData = BookingHelper::getCheckoutData();
+        
+        // if (! $carId = Arr::get($sessionData, 'car_id')) {
+        //     return $this
+        //         ->httpResponse()
+        //         ->setError()
+        //         ->setMessage(__(
+        //             'This car is not available for booking!',
+        //         ))
+        //         ->withInput();
+        // }
 
-        if (! $carId = Arr::get($sessionData, 'car_id')) {
-            return $this
-                ->httpResponse()
-                ->setError()
-                ->setMessage(__(
-                    'This car is not available for booking!',
-                ))
-                ->withInput();
-        }
-
+        $carId = $request->input('car_id');
+        
         $car = Car::query()
             ->with('tax')
             ->whereKey($carId)
             ->first();
-
+        
         if (! $car) {
             return $this
                 ->httpResponse()
@@ -522,38 +525,38 @@ class PublicController extends BaseController
                 ->withInput();
         }
 
-        $startDate = $sessionData['rental_start_date'] ? CarRentalsHelper::dateFromRequest($sessionData['rental_start_date']) : null;
-        $endDate = $sessionData['rental_end_date'] ? CarRentalsHelper::dateFromRequest($sessionData['rental_end_date']) : null;
-        $startTime = Arr::get($sessionData, 'rental_start_time', '09:00');
-        $endTime = Arr::get($sessionData, 'rental_end_time', '09:00');
-
+        $startDate = $request->rental_start_date ? CarRentalsHelper::dateFromRequest($request->rental_start_date) : null;
+        $endDate = $request->rental_end_date ? CarRentalsHelper::dateFromRequest($request->rental_end_date) : null;
+        $startTime = '09:00';
+        $endTime =  '09:00';
+        
         $days = max(1, $startDate->diffInDays($endDate));
 
         $serviceAmount = 0;
         $services = collect();
 
-        if ($serviceIds = Arr::get($sessionData, 'service_ids')) {
-            $services = Service::query()->whereIn('id', $serviceIds)->get();
+        // if ($serviceIds = Arr::get($sessionData, 'service_ids')) {
+        //     $services = Service::query()->whereIn('id', $serviceIds)->get();
 
-            foreach ($services as $service) {
-                if ($service->price_type == ServicePriceTypeEnum::PER_DAY) {
-                    $serviceAmount += $service->price * $days;
-                } else {
-                    $serviceAmount += $service->price;
-                }
-            }
-        }
+        //     foreach ($services as $service) {
+        //         if ($service->price_type == ServicePriceTypeEnum::PER_DAY) {
+        //             $serviceAmount += $service->price * $days;
+        //         } else {
+        //             $serviceAmount += $service->price;
+        //         }
+        //     }
+        // }
 
-        if (! $car->isAvailableAt(['start_date' => $startDate, 'end_date' => $endDate])) {
-            return $this
-                ->httpResponse()
-                ->setError()
-                ->setMessage(__(
-                    'This car is not available for booking from :start_date to :end_date!',
-                    ['start_date' => $startDate->toDateString(), 'end_date' => $endDate->toDateString()]
-                ))
-                ->withInput();
-        }
+        // if (! $car->isAvailableAt(['start_date' => $startDate, 'end_date' => $endDate])) {
+        //     return $this
+        //         ->httpResponse()
+        //         ->setError()
+        //         ->setMessage(__(
+        //             'This car is not available for booking from :start_date to :end_date!',
+        //             ['start_date' => $startDate->toDateString(), 'end_date' => $endDate->toDateString()]
+        //         ))
+        //         ->withInput();
+        // }
 
         if ($request->input('is_register') == 1) {
             $request->validate([
@@ -570,9 +573,18 @@ class PublicController extends BaseController
             Auth::guard('customer')->loginUsingId($customer->getKey());
         }
 
+        
+
         $discountAmount = 0;
 
-        $rentalCarAmount = $car->getCarRentalPrice($startDate->toDateString(), $endDate->toDateString());
+        if($request->rent_type=='monthly'){
+
+            $rentalCarAmount = $car->monthly_rent * $request->no_of_months;
+
+        }else{
+            $rentalCarAmount = $car->getCarRentalPrice($startDate->toDateString(), $endDate->toDateString());
+        }
+        
 
         $amount = $rentalCarAmount + $serviceAmount;
 
@@ -595,6 +607,7 @@ class PublicController extends BaseController
                 ]);
             }
         }
+       
 
         $totalAmount = ($amount + $taxAmount) - $discountAmount;
 
@@ -621,7 +634,7 @@ class PublicController extends BaseController
         // Combine date and time for rental start and end
         $rentalStartDateTime = Carbon::parse($startDate->toDateString() . ' ' . $startTime);
         $rentalEndDateTime = Carbon::parse($endDate->toDateString() . ' ' . $endTime);
-
+        
         BookingCar::query()->create([
             'booking_id' => $booking->id,
             'car_id' => $car->id,
@@ -632,8 +645,11 @@ class PublicController extends BaseController
             'price' => $rentalCarAmount,
             'pickup_city_id' => null,  // These fields will be customer-selected during booking
             'return_city_id' => null,
+            'no_of_months' => $request->no_of_months,
             'currency_id' => $request->input('currency_id', strtoupper(get_application_currency()->id)),
         ]);
+
+         
 
         $booking->services()->attach($services->pluck('id')->all());
 
@@ -641,21 +657,25 @@ class PublicController extends BaseController
             'order_id' => $booking->getKey(),
         ]);
 
+        $payment_method = 'cod'; // $request->input('payment_method') 
+
         $data = [
             'error' => false,
             'message' => false,
             'amount' => $booking->amount,
             'currency' => strtoupper(get_application_currency()->title),
-            'type' => $request->input('payment_method'),
+            'type' => $payment_method,
             'charge_id' => null,
         ];
+
+        
 
         if (is_plugin_active('payment')) {
             session()->put('selected_payment_method', $data['type']);
 
             $paymentData = apply_filters(PAYMENT_FILTER_PAYMENT_DATA, [], $request);
 
-            switch ($request->input('payment_method')) {
+            switch ($payment_method) {
                 case PaymentMethodEnum::COD:
                     $codPaymentService = app(CodPaymentService::class);
                     $data['charge_id'] = $codPaymentService->execute($paymentData);
@@ -676,6 +696,8 @@ class PublicController extends BaseController
                     break;
             }
 
+            
+
             if ($checkoutUrl = Arr::get($data, 'checkoutUrl')) {
                 return $this
                     ->httpResponse()
@@ -685,6 +707,8 @@ class PublicController extends BaseController
                     ->withInput()
                     ->setMessage($data['message']);
             }
+
+            
 
             if ($data['error'] || ! $data['charge_id']) {
                 return $this
@@ -702,11 +726,13 @@ class PublicController extends BaseController
             BookingCreated::dispatch($booking);
 
             $redirectUrl = PaymentHelper::getRedirectURL();
+           
         } else {
             BookingCreated::dispatch($booking);
 
             $redirectUrl = route('public.booking.information', $booking->transaction_id);
         }
+
 
         if ($token = $request->input('token')) {
             session()->forget($token);
@@ -725,7 +751,7 @@ class PublicController extends BaseController
             ->where('transaction_id', $transactionId)
             ->latest('id')
             ->first();
-
+       
         abort_unless($booking, 404);
 
         if (is_plugin_active('payment') && (float) $booking->amount && ! $booking->payment_id) {
@@ -744,10 +770,11 @@ class PublicController extends BaseController
         $request->validate([
             'car_id' => ['required', 'exists:cr_cars,id'],
             'rental_start_date' => ['required', 'string', 'date'],
-            'rental_start_time' => ['nullable', 'string', 'date_format:H:i'],
+            //'rental_start_time' => ['nullable', 'string', 'date_format:H:i'],
             'rental_end_date' => ['required', 'string', 'date'],
-            'rental_end_time' => ['nullable', 'string', 'date_format:H:i'],
+            //'rental_end_time' => ['nullable', 'string', 'date_format:H:i'],
             'service_ids' => ['nullable', 'array'],
+            'rent_type' => ['nullable', 'string', 'in:daily,monthly'],
         ]);
 
         $car = Car::query()
@@ -757,7 +784,14 @@ class PublicController extends BaseController
         $startDate = $request->input('rental_start_date') ? CarRentalsHelper::dateFromRequest($request->input('rental_start_date')) : null;
         $endDate = $request->input('rental_end_date') ? CarRentalsHelper::dateFromRequest($request->input('rental_end_date')) : null;
 
-        $rentalCarAmount = $car->getCarRentalPrice($startDate->toDateString(), $endDate->toDateString());
+        if($request->input('rent_type') == 'monthly') {
+            $rentalCarAmount = $car->monthly_rent * $request->input('no_of_months', 1);
+        }
+        else{
+            $rentalCarAmount = $car->getCarRentalPrice($startDate->toDateString(), $endDate->toDateString());
+        }
+
+        
 
         $amount = $rentalCarAmount;
 
