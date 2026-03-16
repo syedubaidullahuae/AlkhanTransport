@@ -177,9 +177,9 @@ class BookingForm extends FormFront
                         $option->value($customer->phone);
                     })
             )
-             
-            
-            ->when(!empty($serviceOptions), function (FormAbstract $form) use ($serviceOptions) {
+
+
+            ->when(!empty($serviceOptions) && config('carento.show_additional_services', true), function (FormAbstract $form) use ($serviceOptions) {
                 $form->add(
                     'service_ids[]',
                     MultiCheckListField::class,
