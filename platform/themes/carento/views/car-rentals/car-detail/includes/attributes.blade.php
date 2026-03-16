@@ -1,15 +1,6 @@
 <div class="box-feature-car">
     <div class="list-feature-car">
-        <div class="item-feature-car w-md-25">
-            <div class="item-feature-car-inner">
-                <div class="feature-image">
-                    {!! BaseHelper::renderIcon($car->mileage_icon, attributes: ['class' => 'icon-mileage']) !!}
-                </div>
-                <div class="feature-info">
-                    <p class="text-md-medium neutral-1000">{{ $car->mileage_display }}</p>
-                </div>
-            </div>
-        </div>
+     
 
         @if($horsepower = $car->horsepower)
             <div class="item-feature-car w-md-25">

@@ -11,12 +11,13 @@
 
     {!! Theme::header() !!}
     <style>
-        .ck-content h1{
-  font-size: 32px !important;
-}
-.ck-content h2{
-  font-size: 24px !important;
-}
+        .post-content h1{
+            font-size: 32px !important;
+            
+        }
+            .post-content h2{
+        font-size: 24px !important;
+        }
     </style>
    
 </head>

@@ -9,7 +9,7 @@
 
         @if($content = $car->content)
             <div class="collapse show" id="collapseOverview">
-                <div class="card card-body ck-content">
+                <div class="card card-body ck-content post-content">
                     {!! BaseHelper::clean($content) !!}
                 </div>
             </div>
