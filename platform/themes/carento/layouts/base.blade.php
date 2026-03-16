@@ -7,8 +7,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {!! Theme::partial('css-variable-declare') !!}
+     
 
     {!! Theme::header() !!}
+    <style>
+        .ck-content h1{
+  font-size: 32px !important;
+}
+.ck-content h2{
+  font-size: 24px !important;
+}
+    </style>
+   
 </head>
 
 <body {!! Theme::bodyAttributes() !!} >
