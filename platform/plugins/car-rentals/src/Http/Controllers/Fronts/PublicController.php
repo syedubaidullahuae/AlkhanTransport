@@ -21,6 +21,7 @@ use Botble\CarRentals\Http\Resources\LocationResource;
 use Botble\CarRentals\Models\Booking;
 use Botble\CarRentals\Models\BookingCar;
 use Botble\CarRentals\Models\Car;
+use Botble\CarRentals\Models\CarCategory;
 use Botble\CarRentals\Models\CarMake;
 use Botble\CarRentals\Models\CarReview;
 use Botble\CarRentals\Models\CarTag;
@@ -1234,5 +1235,70 @@ class PublicController extends BaseController
             'booking_locations' => $bookingLocations,
             'total' => $locations->count() + $bookingLocations->count(),
         ]);
+    }
+
+    public function getCarByCategories(Request $request, $slug)
+    {
+        // ✅ Get slug
+        $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(CarCategory::class));
+        abort_unless($slug, 404);
+
+        // ✅ Get full category
+        $category = $slug->reference;
+        abort_if(!$category, 404);
+
+        // ✅ Merge request filters with category
+        $filters = array_merge(
+            $request->input(), // 🔥 allows sorting, pagination, filters
+            [
+                'car_categories' => [$category->id] // ✅ IMPORTANT
+            ]
+        );
+
+        // ✅ Apply filters
+        $requestQuery = CarListHelper::getCarFilters($filters);
+
+        // Relations
+        $with = [
+            'slugable',
+            'transmission',
+            'fuel',
+            'city',
+            'state',
+            'country',
+            'make',
+        ];
+
+        $sortBy = $requestQuery['sort_by'] ?? 'recently_added';
+
+        // ✅ Main query (Botble standard)
+        $cars = app(CarInterface::class)->getCars(
+            $requestQuery,
+            [
+                'with' => $with,
+                'order_by' => $sortBy,
+                'paginate' => [
+                    'per_page' => $requestQuery['per_page'] ?? Arr::first(CarListHelper::getPerPageParams()),
+                    'current_paged' => $requestQuery['page'] ?? 1,
+                ],
+            ]
+        );
+
+        // ✅ SEO
+        SeoHelper::setTitle($category->name);
+        SeoHelper::setDescription("Browse cars in " . $category->name);
+
+        // ✅ Breadcrumb (recommended)
+        Theme::breadcrumb()
+            ->add(__('Home'), route('public.index'))z
+            ->add(__('Rental'), route('public.cars'))
+            ->add($category->name);
+
+        // ✅ Return view
+        return Theme::scope(
+            'car-rentals.category-car',
+            compact('cars', 'category'),
+            'plugins/car-rentals::themes.cars'
+        )->render();
     }
 }

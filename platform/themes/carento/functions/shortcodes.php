@@ -27,6 +27,7 @@ use Botble\Theme\Facades\Theme;
 use Botble\Theme\Supports\ThemeSupport;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Botble\CarRentals\Models\CarCategory;
 
 app()->booted(function (): void {
     ThemeSupport::registerGoogleMapsShortcode();
@@ -126,7 +127,7 @@ app()->booted(function (): void {
                 UiSelectorFieldOption::make()
                     ->choices(
                         collect(range(1, 2))
-                            ->mapWithKeys(fn ($number) => [
+                            ->mapWithKeys(fn($number) => [
                                 ($style = "style-$number") => [
                                     'label' => __('Style :number', ['number' => $number]),
                                     'image' => Theme::asset()->url("images/shortcodes/site-statistics/$style.png"),
@@ -500,7 +501,7 @@ app()->booted(function (): void {
                         'all' => __('All cars'),
                         'new_car' => __('New cars'),
                         'used_car' => __('Used cars'),
-                    ])->sortBy(fn ($tab, $key) => array_search($key, $selectedTabs))->all())
+                    ])->sortBy(fn($tab, $key) => array_search($key, $selectedTabs))->all())
                     ->selected($selectedTabs)
                     ->colspan(2)
             );
@@ -521,7 +522,7 @@ app()->booted(function (): void {
                 UiSelectorFieldOption::make()
                     ->choices(
                         collect(range(1, 2))
-                            ->mapWithKeys(fn ($number) => [
+                            ->mapWithKeys(fn($number) => [
                                 ($style = "style-$number") => [
                                     'label' => __('Style :number', ['number' => $number]),
                                     'image' => Theme::asset()->url("images/shortcodes/intro-video/$style.png"),
@@ -663,7 +664,7 @@ app()->booted(function (): void {
         $carTypeIds = Shortcode::fields()->getIds('car_types', $shortcode);
         $carTypes = CarType::query()
             ->withCount('cars')
-            ->when(empty($carTypeIds) === false, fn ($builder) => $builder->whereIn('id', $carTypeIds))
+            ->when(empty($carTypeIds) === false, fn($builder) => $builder->whereIn('id', $carTypeIds))
             ->get();
 
         return Theme::partial('shortcodes.car-types.index', compact('shortcode', 'carTypes'));
@@ -678,7 +679,7 @@ app()->booted(function (): void {
                 UiSelectorFieldOption::make()
                     ->choices(
                         collect(range(1, 2))
-                            ->mapWithKeys(fn ($number) => [
+                            ->mapWithKeys(fn($number) => [
                                 ("style-$number") => [
                                     'label' => __('Style :number', ['number' => $number]),
                                     'image' => Theme::asset()->url("images/shortcodes/car-types/style-$number.png"),
@@ -788,7 +789,7 @@ app()->booted(function (): void {
                 UiSelectorFieldOption::make()
                     ->choices(
                         collect(range(1, 2))
-                            ->mapWithKeys(fn ($number) => [
+                            ->mapWithKeys(fn($number) => [
                                 ($style = "style-$number") => [
                                     'label' => __('Style :number', ['number' => $number]),
                                     'image' => Theme::asset()->url("images/shortcodes/featured-block/$style.png"),
@@ -1055,7 +1056,7 @@ app()->booted(function (): void {
                 UiSelectorFieldOption::make()
                     ->choices(
                         collect(range(1, 3))
-                            ->mapWithKeys(fn ($number) => [
+                            ->mapWithKeys(fn($number) => [
                                 ($style = "style-$number") => [
                                     'label' => __('Style :number', ['number' => $number]),
                                     'image' => Theme::asset()->url("images/shortcodes/install-apps/$style.png"),
@@ -1246,7 +1247,7 @@ app()->booted(function (): void {
                     UiSelectorFieldOption::make()
                         ->choices(
                             collect(range(1, 3))
-                                ->mapWithKeys(fn ($number) => [
+                                ->mapWithKeys(fn($number) => [
                                     ($style = "style-$number") => [
                                         'label' => __('Style :number', ['number' => $number]),
                                         'image' => Theme::asset()->url("images/shortcodes/simple-sliders/$style.png"),
@@ -1260,4 +1261,49 @@ app()->booted(function (): void {
                 );
         });
     }
+
+    Shortcode::register('vehicle_types','Vehicle Types','Vehicle Types', function ($shortcode) {
+
+        // ✅ Get all enabled categories
+        $categories = CarCategory::query()
+            ->where('status', 'published')
+            ->get();
+
+        return Theme::partial('shortcodes.vechicle-type.vehicle-types', [
+            'categories' => $categories,
+            'title' => $shortcode->title,
+            'description' => $shortcode->description,
+        ]);
+    });
+
+    Shortcode::setAdminConfig('vehicle_types', function ($attributes) {
+
+        $categories = CarCategory::query()
+            ->where('status', 'published')
+            ->get();
+
+        return ShortcodeForm::createFromArray($attributes)
+            ->add(
+                'title',
+                TextField::class,
+                TextFieldOption::make()->label(__('Title'))
+            )
+            ->add(
+                'description',
+                TextareaField::class,
+                TextareaFieldOption::make()->label(__('Description'))
+            )
+
+            // ✅ CUSTOM HTML FIELD
+            ->add(
+                'categories_html',
+                'html',
+                [
+                    'html' => Theme::partial('shortcodes.vechicle-type.vehicle-types-admin', [
+                        'categories' => $categories,
+                        'selected' => $attributes['categories'] ?? [],
+                    ])
+                ]
+            );
+    });
 });

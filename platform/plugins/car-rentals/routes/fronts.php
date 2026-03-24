@@ -30,6 +30,8 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
         Route::post('ajax/booking/{token}/services/update', [ServiceController::class, 'store'])->name(
             'public.ajax.booking.services.update'
         );
+
+        Route::get('/rental/{slug}', [PublicController::class, 'getCarByCategories'])->name('car-rentals.category');
         Route::post('checkout', [PublicController::class, 'postCheckout'])->name('public.checkout.post');
         Route::get('checkout/{transactionId}/success', [PublicController::class, 'getCheckoutSuccess'])
             ->name('public.checkout.success');
@@ -51,5 +53,8 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
         Route::get('currency/switch/{code?}', [PublicController::class, 'switchCurrency'])->name('public.currency.switch');
 
         Route::post('car-rentals/{id}/message', [MessageController::class, 'store'])->name('car-rentals.message');
+
+        
+
     });
 }
