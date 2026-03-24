@@ -18,6 +18,12 @@
             .post-content h2{
         font-size: 24px !important;
         }
+        .btn-whatsapp{
+            background-color: #25D366;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
     </style>
    
 </head>

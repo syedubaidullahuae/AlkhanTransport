@@ -1290,7 +1290,7 @@ class PublicController extends BaseController
 
         // ✅ Breadcrumb (recommended)
         Theme::breadcrumb()
-            ->add(__('Home'), route('public.index'))z
+            ->add(__('Home'), route('public.index'))
             ->add(__('Rental'), route('public.cars'))
             ->add($category->name);
 

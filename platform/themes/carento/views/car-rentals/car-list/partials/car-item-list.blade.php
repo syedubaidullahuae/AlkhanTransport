@@ -61,9 +61,7 @@
                     @endif
                 </div>
                 <div class="card-facilities">
-                    <div class="item-facilities">
-                        <p class="room text-md-medium neutral-1000">{{ $car->mileage_display }}</p>
-                    </div>
+                    
 
                     @if($transmission && $transmission->name)
                         <div class="item-facilities">

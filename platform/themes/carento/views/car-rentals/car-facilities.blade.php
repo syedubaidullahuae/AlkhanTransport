@@ -1,9 +1,5 @@
 <div class="card-facilities {{ $cssClass ?? '' }}">
-    <p class="card-miles text-md-medium">
-        {!! BaseHelper::renderIcon($car->mileage_icon, attributes: ['class' => 'icon-mileage']) !!}
-        {{ $car->mileage_display }}
-    </p>
-
+    
     @if ($car->transmission)
         <p class="card-gear text-md-medium">
             {!! BaseHelper::renderIcon($car->transmission_icon, attributes: ['class' => 'icon-transmission']) !!}

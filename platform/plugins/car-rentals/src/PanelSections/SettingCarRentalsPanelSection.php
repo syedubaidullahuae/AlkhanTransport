@@ -62,6 +62,12 @@ class SettingCarRentalsPanelSection extends PanelSection
                     ->withDescription(trans('plugins/car-rentals::settings.tax.description'))
                     ->withPriority(180)
                     ->withRoute('car-rentals.settings.taxes'),
+                PanelSectionItem::make('car-rentals.settings.whatsapp-booking')
+                    ->setTitle("WhatsApp Booking")
+                    ->withIcon('fab fa-whatsapp')
+                    ->withDescription("WhatsApp booking integration for cars")
+                    ->withPriority(180)
+                    ->withRoute('car-rentals.settings.whatsapp-booking'),
             ]);
     }
 }
