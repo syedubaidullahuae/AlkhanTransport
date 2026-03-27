@@ -31,6 +31,8 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             'public.ajax.booking.services.update'
         );
 
+        Route::get('/rental-form/{slug}', [PublicController::class, 'getCarsByForm'])->name('public.car-rentals.form');
+
         Route::get('/rental/{slug}', [PublicController::class, 'getCarByCategories'])->name('car-rentals.category');
         Route::post('checkout', [PublicController::class, 'postCheckout'])->name('public.checkout.post');
         Route::get('checkout/{transactionId}/success', [PublicController::class, 'getCheckoutSuccess'])

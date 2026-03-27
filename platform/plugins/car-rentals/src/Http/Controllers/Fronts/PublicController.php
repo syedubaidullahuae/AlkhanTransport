@@ -1301,4 +1301,37 @@ class PublicController extends BaseController
             'plugins/car-rentals::themes.cars'
         )->render();
     }
+
+
+    public function getCarsByForm(string $slug)
+    {
+
+      
+        $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Car::class));
+
+        abort_unless($slug, 404);
+
+        $version = get_cms_version();
+
+        Theme::asset()
+            ->add('front-car-rentals-css', 'vendor/core/plugins/car-rentals/css/front-theme.css', version: $version);
+
+        $car = $slug->reference;
+
+        abort_unless($car, 404);
+
+        $car
+            ->loadMissing(['tags', 'make', 'amenities.category', 'city', 'state', 'country'])
+            ->loadAvg('reviews', 'star')
+            ->loadSum('reviews', 'star')
+            ->loadCount('reviews');
+        
+
+        $carsView = Theme::getThemeNamespace('views.car-rentals.car-detail.includes.booking-form-model');
+
+        return $this
+            ->httpResponse()
+            ->setData(view($carsView, compact('car'))->render());
+       
+    }
 }
