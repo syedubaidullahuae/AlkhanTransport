@@ -11,13 +11,18 @@ $right = $shortcode->right;
 $url = $shortcode->url;
 $backgroundColor = $shortcode->background_color;
 
+
 $variablesStyle = [
-"--box-mt: {$top}px" => $top,
-"--box-mb: {$bottom}px" => $bottom,
-"--box-ml: {$left}px" => $left,
-"--box-mr: {$right}px" => $right,
+"margin-top: {$top}px" => $top,
+"margin-bottom: {$bottom}px" => $bottom,
+"margin-left: {$left}px" => $left,
+"margin-right: {$right}px" => $right,
 "background-color: $backgroundColor" => $backgroundColor,
+    "z-index: 10" => true,
+    "position: sticky" => true
 ];
+
+
 
 $selectedTabs = explode(',', $shortcode->tabs ?: 'all,new_car,used_car');
 
@@ -48,7 +53,7 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
                 <div class="box-bottom-search background-card p-4" style="border: 1px solid #dde1de; border-radius: 16px;" >
 
 
-                    <form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}" class="booking-form">
+                    <form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}" class="booking-form-advance">
                         @csrf
 
                         <input type="hidden" name="car_id" value="1">
