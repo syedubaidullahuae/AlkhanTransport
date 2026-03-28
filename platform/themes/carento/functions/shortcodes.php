@@ -1274,7 +1274,7 @@ app()->booted(function (): void {
             'title' => $shortcode->title,
             'description' => $shortcode->description,
         ]);
-    });
+    }); 
 
     Shortcode::setAdminConfig('vehicle_types', function ($attributes) {
 
@@ -1304,6 +1304,64 @@ app()->booted(function (): void {
                         'selected' => $attributes['categories'] ?? [],
                     ])
                 ]
+            );
+    });
+
+    Shortcode::register( 'booking-form', "Booking Form", "Booking Form", function ($shortcode) {
+          
+            Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
+
+            $carTypes = CarType::query()->where('status', 'published')->get();
+
+            return Theme::partial('shortcodes.booking.booking-from', compact('shortcode','carTypes'));
+        }
+    );
+    Shortcode::setPreviewImage('booking-form', Theme::asset()->url('images/ui-blocks/car-advance-search.png'));
+    Shortcode::setAdminConfig('booking-form', function (array $attributes) {
+        $selectedTabs = explode(',', (Arr::get($attributes, 'tabs') ?: 'all,new_car,used_car'));
+
+        return ShortcodeForm::createFromArray($attributes)
+            ->columns()
+            ->withCustomFields()
+            ->add(
+                'top',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Top (px)'))
+                    ->colspan(1)
+                    ->defaultValue(0)
+            )
+            ->add(
+                'bottom',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Bottom (px)'))
+                    ->colspan(1)
+                    ->defaultValue(0)
+            )
+            ->add(
+                'left',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Left (px)'))
+                    ->colspan(1)
+                    ->defaultValue(0)
+            )
+            ->add(
+                'right',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Right (px)'))
+                    ->colspan(1)
+                    ->defaultValue(0)
+            )
+            
+            ->add(
+                'background_color',
+                ColorField::class,
+                ColorFieldOption::make()
+                    ->label(__('Background Color'))
+                    ->colspan(2),
             );
     });
 });

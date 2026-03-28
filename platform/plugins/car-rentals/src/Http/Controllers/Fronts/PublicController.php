@@ -509,8 +509,22 @@ class PublicController extends BaseController
         //         ->withInput();
         // }
 
-        $carId = $request->input('car_id');
-        
+        if(isset($request->vehical_type)){
+
+            $carQuery = Car::query()
+                ->where('vehicle_type_id', $request->vehical_type)
+                ->first();
+
+            if (!$carQuery) {
+                $carQuery = Car::query()->first();
+            }
+
+            $carId = $carQuery ? $carQuery->id : null;
+        }
+        else{
+            $carId = $request->input('car_id');
+        }
+
         $car = Car::query()
             ->with('tax')
             ->whereKey($carId)
