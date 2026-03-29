@@ -100,14 +100,7 @@ class BookingCreateForm extends FormAbstract
                     ->required()
                     ->colspan(1)
             )
-            ->add(
-                'email',
-                TextField::class,
-                TextFieldOption::make()
-                    ->label(trans('plugins/car-rentals::booking.email'))
-                    ->required()
-                    ->colspan(1)
-            )
+           
             ->add(
                 'phone',
                 TextField::class,

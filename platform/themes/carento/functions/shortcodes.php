@@ -1313,7 +1313,13 @@ app()->booted(function (): void {
 
             $carTypes = CarType::query()->where('status', 'published')->get();
 
-            return Theme::partial('shortcodes.booking.booking-from', compact('shortcode','carTypes'));
+            $form = app(\Kris\LaravelFormBuilder\FormBuilder::class)
+            ->create(Botble\CarRentals\Forms\Fronts\Customers\PhoneBookinFrom::class);
+
+            $phoneInput = $form->getField('customer_phone')->render();
+
+
+            return Theme::partial('shortcodes.booking.booking-from', compact('shortcode','carTypes','phoneInput'));
         }
     );
     Shortcode::setPreviewImage('booking-form', Theme::asset()->url('images/ui-blocks/car-advance-search.png'));

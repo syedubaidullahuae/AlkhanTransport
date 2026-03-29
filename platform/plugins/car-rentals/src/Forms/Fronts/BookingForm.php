@@ -13,9 +13,11 @@ use Botble\Base\Forms\Fields\HtmlField;
 use Botble\Base\Forms\Fields\MultiCheckListField;
 use Botble\Base\Forms\Fields\NumberField;
 use Botble\Base\Forms\Fields\SelectField;
+use Botble\Base\Forms\Fields\PhoneNumberField;
 use Botble\Base\Forms\FormAbstract;
 use Botble\CarRentals\Facades\CarRentalsHelper;
 use Botble\CarRentals\Forms\Fronts\Auth\FieldOptions\TextFieldOption;
+use Botble\CarRentals\Forms\Fronts\Auth\FieldOptions\PhoneNumberFieldOption;
 use Botble\Base\Forms\Fields\TextField;
 use Botble\CarRentals\Http\Requests\Fronts\BookingRequest;
 use Botble\CarRentals\Models\Booking;
@@ -168,14 +170,12 @@ class BookingForm extends FormFront
             )
             ->add(
                 'customer_phone',
-                TextField::class,
-                TextFieldOption::make()
-                    ->label(__('Phone'))
-                    ->placeholder(__('Enter your phone number'))
-                    ->required()
-                    ->when($customer, function (TextFieldOption $option) use ($customer): void {
-                        $option->value($customer->phone);
-                    })
+                PhoneNumberField::class,
+                PhoneNumberFieldOption::make()
+                    ->label(__('Phone (optional)'))
+                    ->placeholder(__('Phone number'))
+                    ->withCountryCodeSelection()
+                    ->addAttribute('autocomplete', 'tel')
             )
 
 

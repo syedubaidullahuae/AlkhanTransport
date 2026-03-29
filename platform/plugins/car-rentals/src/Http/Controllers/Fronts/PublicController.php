@@ -51,6 +51,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Kris\LaravelFormBuilder\FormBuilder;
 
 class PublicController extends BaseController
 {
@@ -496,9 +497,9 @@ class PublicController extends BaseController
 
     public function postCheckout(CheckoutRequest $request)
     {
-       
+
         $sessionData = BookingHelper::getCheckoutData();
-        
+
         // if (! $carId = Arr::get($sessionData, 'car_id')) {
         //     return $this
         //         ->httpResponse()
@@ -509,7 +510,7 @@ class PublicController extends BaseController
         //         ->withInput();
         // }
 
-        if(isset($request->vehical_type)){
+        if (isset($request->vehical_type)) {
 
             $carQuery = Car::query()
                 ->where('vehicle_type_id', $request->vehical_type)
@@ -520,8 +521,7 @@ class PublicController extends BaseController
             }
 
             $carId = $carQuery ? $carQuery->id : null;
-        }
-        else{
+        } else {
             $carId = $request->input('car_id');
         }
 
@@ -529,7 +529,7 @@ class PublicController extends BaseController
             ->with('tax')
             ->whereKey($carId)
             ->first();
-        
+
         if (! $car) {
             return $this
                 ->httpResponse()
@@ -544,7 +544,7 @@ class PublicController extends BaseController
         $endDate = $request->rental_end_date ? CarRentalsHelper::dateFromRequest($request->rental_end_date) : null;
         $startTime = '09:00';
         $endTime =  '09:00';
-        
+
         $days = max(1, $startDate->diffInDays($endDate));
 
         $serviceAmount = 0;
@@ -588,18 +588,17 @@ class PublicController extends BaseController
             Auth::guard('customer')->loginUsingId($customer->getKey());
         }
 
-        
+
 
         $discountAmount = 0;
 
-        if($request->rent_type=='monthly'){
+        if ($request->rent_type == 'monthly') {
 
             $rentalCarAmount = $car->monthly_rent * $request->no_of_months;
-
-        }else{
+        } else {
             $rentalCarAmount = $car->getCarRentalPrice($startDate->toDateString(), $endDate->toDateString());
         }
-        
+
 
         $amount = $rentalCarAmount + $serviceAmount;
 
@@ -622,7 +621,7 @@ class PublicController extends BaseController
                 ]);
             }
         }
-       
+
 
         $totalAmount = ($amount + $taxAmount) - $discountAmount;
 
@@ -649,7 +648,7 @@ class PublicController extends BaseController
         // Combine date and time for rental start and end
         $rentalStartDateTime = Carbon::parse($startDate->toDateString() . ' ' . $startTime);
         $rentalEndDateTime = Carbon::parse($endDate->toDateString() . ' ' . $endTime);
-        
+
         BookingCar::query()->create([
             'booking_id' => $booking->id,
             'car_id' => $car->id,
@@ -664,7 +663,7 @@ class PublicController extends BaseController
             'currency_id' => $request->input('currency_id', strtoupper(get_application_currency()->id)),
         ]);
 
-         
+
 
         $booking->services()->attach($services->pluck('id')->all());
 
@@ -683,7 +682,7 @@ class PublicController extends BaseController
             'charge_id' => null,
         ];
 
-        
+
 
         if (is_plugin_active('payment')) {
             session()->put('selected_payment_method', $data['type']);
@@ -711,7 +710,7 @@ class PublicController extends BaseController
                     break;
             }
 
-            
+
 
             if ($checkoutUrl = Arr::get($data, 'checkoutUrl')) {
                 return $this
@@ -723,7 +722,7 @@ class PublicController extends BaseController
                     ->setMessage($data['message']);
             }
 
-            
+
 
             if ($data['error'] || ! $data['charge_id']) {
                 return $this
@@ -741,7 +740,6 @@ class PublicController extends BaseController
             BookingCreated::dispatch($booking);
 
             $redirectUrl = PaymentHelper::getRedirectURL();
-           
         } else {
             BookingCreated::dispatch($booking);
 
@@ -766,7 +764,7 @@ class PublicController extends BaseController
             ->where('transaction_id', $transactionId)
             ->latest('id')
             ->first();
-       
+
         abort_unless($booking, 404);
 
         if (is_plugin_active('payment') && (float) $booking->amount && ! $booking->payment_id) {
@@ -799,14 +797,13 @@ class PublicController extends BaseController
         $startDate = $request->input('rental_start_date') ? CarRentalsHelper::dateFromRequest($request->input('rental_start_date')) : null;
         $endDate = $request->input('rental_end_date') ? CarRentalsHelper::dateFromRequest($request->input('rental_end_date')) : null;
 
-        if($request->input('rent_type') == 'monthly') {
+        if ($request->input('rent_type') == 'monthly') {
             $rentalCarAmount = $car->monthly_rent * $request->input('no_of_months', 1);
-        }
-        else{
+        } else {
             $rentalCarAmount = $car->getCarRentalPrice($startDate->toDateString(), $endDate->toDateString());
         }
 
-        
+
 
         $amount = $rentalCarAmount;
 
@@ -1317,21 +1314,28 @@ class PublicController extends BaseController
     }
 
 
-    public function getCarsByForm(string $slug)
+    public function getCarsByForm(string $slug, FormBuilder $formBuilder)
     {
-
-      
         $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Car::class));
-
         abort_unless($slug, 404);
 
         $version = get_cms_version();
 
+        Theme::asset()->add(
+            'front-car-rentals-css',
+            'vendor/core/plugins/car-rentals/css/front-theme.css',
+            version: $version
+        );
+
         Theme::asset()
-            ->add('front-car-rentals-css', 'vendor/core/plugins/car-rentals/css/front-theme.css', version: $version);
+            ->container('footer')
+            ->add(
+                'booking-js',
+                'vendor/core/plugins/car-rentals/js/front-booking-form.js',
+                version: $version
+            );
 
         $car = $slug->reference;
-
         abort_unless($car, 404);
 
         $car
@@ -1339,13 +1343,23 @@ class PublicController extends BaseController
             ->loadAvg('reviews', 'star')
             ->loadSum('reviews', 'star')
             ->loadCount('reviews');
-        
 
-        $carsView = Theme::getThemeNamespace('views.car-rentals.car-detail.includes.booking-form-model');
+        // ✅ Create form properly
+        $form = $formBuilder->create(
+            \Botble\CarRentals\Forms\Fronts\Customers\PhoneBookinFrom::class
+        );
+
+        // ✅ Get only phone field
+        $phoneInput = optional($form->getField('customer_phone'))->render();
+        
+        $carsView = Theme::getThemeNamespace(
+            'views.car-rentals.car-detail.includes.booking-form-model'
+        );
 
         return $this
             ->httpResponse()
-            ->setData(view($carsView, compact('car'))->render());
-       
+            ->setData(
+                view($carsView, compact('car', 'phoneInput'))->render()
+            );
     }
 }

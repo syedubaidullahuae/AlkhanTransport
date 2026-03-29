@@ -26,7 +26,7 @@
         </div>
 
         {{-- Months --}}
-        <div class="col-lg-6">
+        <div class="col-lg-6 position-relative">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Number of Months</label>
                 <input type="number" name="no_of_months" class="form-control" value="1">
@@ -34,7 +34,7 @@
         </div>
 
         {{-- Start Date --}}
-        <div class="col-lg-6">
+        <div class="col-lg-6 item-line-booking">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Start Date</label>
                 <input type="date" name="rental_start_date" class="form-control" value="{{ $startDate  }}">
@@ -42,7 +42,7 @@
         </div>
 
         {{-- End Date --}}
-        <div class="col-lg-6">
+        <div class="col-lg-6 item-line-booking">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">End Date</label>
                 <input type="date" name="rental_end_date" class="form-control" value="{{ $endDate  }}">
@@ -69,7 +69,7 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Phone</label>
-                <input type="text" name="customer_phone" class="form-control" placeholder="Enter phone">
+                {!! $phoneInput !!}
             </div>
         </div>
 

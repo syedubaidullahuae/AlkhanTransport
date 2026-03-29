@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 
 
+
 $linkNeedHelp = $shortcode->link_need_help;
 $top = $shortcode->top;
 $bottom = $shortcode->bottom;
@@ -105,8 +106,7 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
                                     <input type="date" name="rental_end_date" class="form-control" value="{{ $endDate  }}">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
+                        
                       
 
                             {{-- Name --}}
@@ -129,9 +129,11 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label class="text-sm-medium neutral-1000">Phone</label>
-                                    <input type="text" name="customer_phone" class="form-control" placeholder="Enter phone">
+                                    {!! $phoneInput !!}
                                 </div>
                             </div>
+
+                            <div class="col-lg-3 extra-info" style="display: none;"></div>
 
                             {{-- Submit --}}
                             <div class="col-lg-3 mt-1">
