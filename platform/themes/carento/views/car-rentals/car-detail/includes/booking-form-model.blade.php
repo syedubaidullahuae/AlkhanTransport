@@ -7,7 +7,7 @@
 @endphp
 
 
-<form action="{{ route('public.checkout.post') }}" method="POST" class="form-contact car-loan-form">
+<form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}"  class="">
     @csrf
 
     <input type="hidden" name="car_id" value="{{ $car->id }}">
@@ -18,7 +18,7 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Rent Type</label>
-                <select name="rent_type" class="form-select">
+                <select name="rent_type" class="form-select rent_type">
                     <option value="daily">Daily Rent</option>
                     <option value="monthly">Monthly Rent</option>
                 </select>
@@ -26,7 +26,7 @@
         </div>
 
         {{-- Months --}}
-        <div class="col-lg-6 position-relative">
+        <div class="col-lg-6 months-field d-none">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Number of Months</label>
                 <input type="number" name="no_of_months" class="form-control" value="1">
@@ -34,7 +34,7 @@
         </div>
 
         {{-- Start Date --}}
-        <div class="col-lg-6 item-line-booking">
+        <div class="col-lg-6 date-fields">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Start Date</label>
                 <input type="date" name="rental_start_date" class="form-control" value="{{ $startDate  }}">
@@ -42,7 +42,7 @@
         </div>
 
         {{-- End Date --}}
-        <div class="col-lg-6 item-line-booking">
+        <div class="col-lg-6 date-fields">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">End Date</label>
                 <input type="date" name="rental_end_date" class="form-control" value="{{ $endDate  }}">
@@ -100,3 +100,4 @@
 
     </div>
 </form>
+

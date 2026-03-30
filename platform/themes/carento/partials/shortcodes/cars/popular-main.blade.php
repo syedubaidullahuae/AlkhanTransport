@@ -15,8 +15,8 @@
                                             {{ RvMedia::image($car->image, $car->name, 'small-rectangle') }}
                                         </a>
                                     </div>
-                                    <div class="card-info p-4 mt-0 position-relative end-0 h-100 w-lg-55 rounded-12">
-                                        <div class="card-rating position-relative start-0 top-0">
+                                    <div class="card-info p-4 mt-0 position-relative end-0  w-lg-55 rounded-12">
+                                        <div class="card-rating position-relative start-0 top-0 pt-2">
                                             <div class="card-right">
                                                 @include(Theme::getThemeNamespace('views.car-rentals.rating'), ['car' => $car, 'cssClass' => 'shadow-none border-0 bg-transparent px-0'])
                                             </div>
@@ -25,7 +25,7 @@
                                         <div class="card-program">
                                             @include(Theme::getThemeNamespace('views.car-rentals.car-facilities'), ['car' => $car, 'cssClass' => 'border-0 pb-1'])
 
-                                            <div class="endtime border-top pt-2">
+                                            <div class="endtime border-top pt-2 pb-2">
                                                 @include(Theme::getThemeNamespace('views.car-rentals.price'), ['car' => $car])
                                                 @include(Theme::getThemeNamespace('views.car-rentals.book-now-button'), ['car' => $car])
                                             </div>
