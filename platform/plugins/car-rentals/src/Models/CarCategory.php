@@ -29,6 +29,7 @@ class CarCategory extends BaseModel implements HasTreeCategoryContract
         'description',
         'status',
         'icon',
+        'image',
         'order',
         'is_featured',
         'is_default',

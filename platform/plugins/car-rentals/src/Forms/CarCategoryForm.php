@@ -6,6 +6,7 @@ use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Forms\FieldOptions\DescriptionFieldOption;
 use Botble\Base\Forms\FieldOptions\IsDefaultFieldOption;
 use Botble\Base\Forms\FieldOptions\NameFieldOption;
+use Botble\Base\Forms\FieldOptions\MediaImageFieldOption;
 use Botble\Base\Forms\FieldOptions\OnOffFieldOption;
 use Botble\Base\Forms\FieldOptions\SelectFieldOption;
 use Botble\Base\Forms\FieldOptions\StatusFieldOption;
@@ -13,6 +14,7 @@ use Botble\Base\Forms\FieldOptions\TextFieldOption;
 use Botble\Base\Forms\Fields\CoreIconField;
 use Botble\Base\Forms\Fields\OnOffField;
 use Botble\Base\Forms\Fields\SelectField;
+use Botble\Base\Forms\Fields\MediaImageField;
 use Botble\Base\Forms\Fields\TextareaField;
 use Botble\Base\Forms\Fields\TextField;
 use Botble\Base\Forms\FormAbstract;
@@ -79,6 +81,7 @@ class CarCategoryForm extends FormAbstract
                     ->addAttribute('data-allow-clear', 'true')
                     ->maxLength(120)
             )
+            ->add('image', MediaImageField::class, MediaImageFieldOption::make()->label("Images"))
             ->add(
                 'is_featured',
                 OnOffField::class,
