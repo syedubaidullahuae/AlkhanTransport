@@ -19,7 +19,7 @@
         font-size: 24px !important;
         }
         .btn-whatsapp{
-            background-color: #25D366;
+            background-color: #7aa93c;
             color: #fff;
             padding: 10px 20px;
             border-radius: 8px;
