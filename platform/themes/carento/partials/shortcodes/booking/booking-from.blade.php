@@ -19,8 +19,8 @@ $variablesStyle = [
 "margin-left: {$left}px" => $left,
 "margin-right: {$right}px" => $right,
 "background-color: $backgroundColor" => $backgroundColor,
-    "z-index: 10" => true,
-    "position: sticky" => true
+"z-index: 10" => true,
+"position: sticky" => true
 ];
 
 
@@ -48,106 +48,101 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
 
 <section {!! $shortcode->htmlAttributes(['style' => $variablesStyle]) !!} class="shortcode-car-advance-search box-section box-search-advance-home10" id="js-box-search-advance">
     <div class="container">
-       
-            <div class="p-4 background-card"  style="border: 1px solid #dde1de; border-radius: 16px;">
-        
-                <div class="box-bottom-search background-card p-4" style="border: 1px solid #dde1de; border-radius: 16px;" >
 
+        <div class="booking-from-advance background-card p-4">
 
-                    <form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}" class="booking-form-advance">
-                        @csrf
+            <form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}" class="booking-form-advance">
+                @csrf
 
-                        <input type="hidden" name="car_id" value="1">
+                <input type="hidden" name="car_id" value="1">
 
-                        <div class="row">
+                <div class="row">
 
-                            {{-- Rent Type --}}
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">Rent Type</label>
-                                    <select name="rent_type" class="form-select">
-                                        <option value="daily">Daily Rent</option>
-                                        <option value="monthly">Monthly Rent</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">Vechical Type</label>
-                                    <select name="vehical_type" class="form-select">
-                                        @foreach($carTypes as $carType)
-                                            <option value="{{ $carType->id }}">{{ $carType->name }}</option>
-                                        @endforeach
-                                       
-                                    </select>
-                                </div>
-                            </div>
-
-                            {{-- Months --}}
-                            <div class="col-lg-3 position-relative">
-                                <div class="form-group ">
-                                    <label class="text-sm-medium neutral-1000">Number of Months</label>
-                                    <input type="number" name="no_of_months" class="form-control" value="1">
-                                </div>
-                            </div>
-
-                            {{-- Start Date --}}
-                            <div class="col-lg-3 item-line-booking">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">Start Date</label>
-                                    <input type="date" name="rental_start_date" class="form-control" value="{{ $startDate  }}">
-                                </div>
-                            </div>
-
-                            {{-- End Date --}}
-                            <div class="col-lg-3 item-line-booking">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">End Date</label>
-                                    <input type="date" name="rental_end_date" class="form-control" value="{{ $endDate  }}">
-                                </div>
-                            </div>
-                        
-                      
-
-                            {{-- Name --}}
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">Full Name</label>
-                                    <input type="text" name="customer_name" class="form-control" placeholder="Enter your name">
-                                </div>
-                            </div>
-
-                            {{-- Email --}}
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">Email</label>
-                                    <input type="email" name="customer_email" class="form-control" placeholder="Enter email">
-                                </div>
-                            </div>
-
-                            {{-- Phone --}}
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label class="text-sm-medium neutral-1000">Phone</label>
-                                    {!! $phoneInput !!}
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 extra-info" style="display: none;"></div>
-
-                            {{-- Submit --}}
-                            <div class="col-lg-3 mt-1">
-                                <label class="text-sm-medium neutral-1000"></label>
-                                <button type="submit" class="btn btn-book w-100">
-                                    Book Now
-                                </button>
-                            </div>
-
+                    {{-- Rent Type --}}
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">Rent Type</label>
+                            <select name="rent_type" class="booking-input">
+                                <option value="daily">Daily Rent</option>
+                                <option value="monthly">Monthly Rent</option>
+                            </select>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">Vechical Type</label>
+                            <select name="vehical_type" class="booking-input">
+                                @foreach($carTypes as $carType)
+                                <option value="{{ $carType->id }}">{{ $carType->name }}</option>
+                                @endforeach
+
+                            </select>
+                        </div>
+                    </div>
+
+                    {{-- Months --}}
+                    <div class="col-lg-3 position-relative">
+                        <div class="form-group ">
+                            <label class="text-sm-medium neutral-1000">Number of Months</label>
+                            <input type="number" name="no_of_months" class="booking-input" value="1">
+                        </div>
+                    </div>
+
+                    {{-- Start Date --}}
+                    <div class="col-lg-3 item-line-booking">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">Start Date</label>
+                            <input type="date" name="rental_start_date" class="booking-input" value="{{ $startDate  }}">
+                        </div>
+                    </div>
+
+                    {{-- End Date --}}
+                    <div class="col-lg-3 item-line-booking">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">End Date</label>
+                            <input type="date" name="rental_end_date" class="booking-input" value="{{ $endDate  }}">
+                        </div>
+                    </div>
+
+
+
+                    {{-- Name --}}
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">Full Name</label>
+                            <input type="text" name="customer_name" class="booking-input" placeholder="Enter your name">
+                        </div>
+                    </div>
+
+                    {{-- Email --}}
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">Email</label>
+                            <input type="email" name="customer_email" class="booking-input" placeholder="Enter email">
+                        </div>
+                    </div>
+
+                    {{-- Phone --}}
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="text-sm-medium neutral-1000">Phone</label>
+                            {!! $phoneInput !!}
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 extra-info" style="display: none;"></div>
+
+                    {{-- Submit --}}
+                    <div class="col-lg-3 mt-1">
+                        <label class="text-sm-medium neutral-1000"></label>
+                        <button type="submit" class="btn btn-book w-100">
+                            Book Now
+                        </button>
+                    </div>
 
                 </div>
-            </div>
-    
+            </form>
+        </div>
+
     </div>
 </section>

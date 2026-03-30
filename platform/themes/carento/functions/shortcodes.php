@@ -1311,6 +1311,8 @@ app()->booted(function (): void {
           
             Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
 
+            Theme::asset()->add('front-car-rentals-css','vendor/core/plugins/car-rentals/css/front-booking-form.css', version: get_cms_version() );
+
             $carTypes = CarType::query()->where('status', 'published')->get();
 
             $form = app(\Kris\LaravelFormBuilder\FormBuilder::class)
