@@ -1372,4 +1372,24 @@ app()->booted(function (): void {
                     ->colspan(2),
             );
     });
+
+    Shortcode::register( 'booking-form-style-2', "Booking Form", "Booking Form", function ($shortcode) {
+          
+            Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
+
+            Theme::asset()->add('front-car-rentals-css','vendor/core/plugins/car-rentals/css/front-booking-form.css', version: get_cms_version() );
+
+            $carTypes = CarType::query()->where('status', 'published')->get();
+
+            $form = app(\Kris\LaravelFormBuilder\FormBuilder::class)
+            ->create(Botble\CarRentals\Forms\Fronts\Customers\PhoneBookinFrom::class);
+
+            $phoneInput = $form->getField('customer_phone')->render();
+
+
+            return Theme::partial('shortcodes.booking.booking-from-style-2', compact('shortcode','carTypes','phoneInput'));
+        }
+    );
+
+    
 });

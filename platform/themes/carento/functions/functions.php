@@ -46,6 +46,7 @@ register_page_template([
     'full-width' => __('Full width'),
     'blog-with-sidebar' => __('Blog with sidebar'),
     'blog-without-sidebar' => __('Blog without sidebar'),
+    'page-booking' => 'Page with Booking Sidebar',
 ]);
 
 app()->booted(function (): void {
