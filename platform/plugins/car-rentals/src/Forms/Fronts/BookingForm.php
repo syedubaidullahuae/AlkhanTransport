@@ -189,20 +189,20 @@ class BookingForm extends FormFront
                         ->colspan(2)
                 );
             })
-            ->add('border_wrapper_after', HtmlField::class, HtmlFieldOption::make()->content('<div class="border-wrapper-after"></div>')->colspan(2))
-            ->add(
-                'total_estimate',
-                HtmlField::class,
-                HtmlFieldOption::make()
-                    ->view('plugins/car-rentals::cars.partials.booking-form-estimate', [
-                        'total' => $totalAmount,
-                        'subtotal' => $rentalPrice,
-                        'tax' => $taxAmount,
-                        'taxInfo' => $taxInfo,
-                        'currencyId' => $car->currency_id,
-                    ])
-                    ->colspan(2)
-            )
+            // ->add('border_wrapper_after', HtmlField::class, HtmlFieldOption::make()->content('<div class="border-wrapper-after"></div>')->colspan(2))
+            // ->add(
+            //     'total_estimate',
+            //     HtmlField::class,
+            //     HtmlFieldOption::make()
+            //         ->view('plugins/car-rentals::cars.partials.booking-form-estimate', [
+            //             'total' => $totalAmount,
+            //             'subtotal' => $rentalPrice,
+            //             'tax' => $taxAmount,
+            //             'taxInfo' => $taxInfo,
+            //             'currencyId' => $car->currency_id,
+            //         ])
+            //         ->colspan(2)
+            // )
             ->add(
                 'submit',
                 'submit',

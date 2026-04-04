@@ -4,7 +4,7 @@
 
     {{-- Book Now --}}
     <div class="card-button flex-fill">
-        <button type="button" class="btn btn-gray w-100 book-now-btn" data-slug="{{ $car->slug }}" >
+        <button type="button" class="btn btn-gray w-100 book-now-btn" data-slug="{{ $car->id }}" data-title="{{ $car->name }}" >
             {{ __('Book Now') }}
         </button>
     </div>

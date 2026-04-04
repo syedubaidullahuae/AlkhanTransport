@@ -49,99 +49,118 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
 <section {!! $shortcode->htmlAttributes(['style' => $variablesStyle]) !!} class="shortcode-car-advance-search box-section box-search-advance-home10" id="js-box-search-advance">
     <div class="container">
 
-        <div class="booking-from-advance background-card p-4">
+        <div class="booking-from-advance booking-form">
 
-            <form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}" class="booking-form-advance">
-                @csrf
+            <div class="content-booking-form">
 
-                <input type="hidden" name="car_id" value="1">
+                <form action="{{ route('public.checkout.post') }}" method="POST" data-estimate-url="{{ route('public.ajax.booking.estimate') }}" class="booking-form-advance">
+                    @csrf
 
-                <div class="row">
+                    <input type="hidden" name="car_id" value="1">
 
-                    {{-- Rent Type --}}
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">Rent Type</label>
-                            <select name="rent_type" class="booking-input">
-                                <option value="daily">Daily Rent</option>
-                                <option value="monthly">Monthly Rent</option>
-                            </select>
+                    <div class="row">
+
+                        {{-- Rent Type --}}
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Rent Type</label>
+                                <select name="rent_type" class="form-select">
+                                    <option value="daily">Daily Rent</option>
+                                    <option value="monthly">Monthly Rent</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">Vechical Type</label>
-                            <select name="vehical_type" class="booking-input">
-                                @foreach($carTypes as $carType)
-                                <option value="{{ $carType->id }}">{{ $carType->name }}</option>
-                                @endforeach
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Vechical Type</label>
+                                <select name="vehical_type" class="form-select">
+                                    @foreach($carTypes as $carType)
+                                    <option value="{{ $carType->id }}">{{ $carType->name }}</option>
+                                    @endforeach
 
-                            </select>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Months --}}
-                    <div class="col-lg-3 position-relative">
-                        <div class="form-group ">
-                            <label class="text-sm-medium neutral-1000">Number of Months</label>
-                            <input type="number" name="no_of_months" class="booking-input" value="1">
+                        {{-- Months --}}
+                        <div class="col-lg-3 position-relative">
+                            <div class="form-group ">
+                                <label class="text-sm-medium neutral-1000">Number of Months</label>
+                                <input type="number" name="no_of_months" class="form-control " value="1">
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Start Date --}}
-                    <div class="col-lg-3 item-line-booking">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">Start Date</label>
-                            <input type="date" name="rental_start_date" class="booking-input" value="{{ $startDate  }}">
+                        <div class="col-lg-3 item-line-booking border-bottom-0 pb-0">
+                            <strong class="text-sm-medium neutral-1000">Start Date</strong>
+                            <div class="input-calendar">
+                                <input class="form-control calendar-date" type="text" name="rental_start_date" value="2026-04-03">
+                                <svg class="icon icon-xs svg-icon-ti-ti-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"></path>
+                                    <path d="M16 3v4"></path>
+                                    <path d="M8 3v4"></path>
+                                    <path d="M4 11h16"></path>
+                                    <path d="M11 15h1"></path>
+                                    <path d="M12 15v3"></path>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- End Date --}}
-                    <div class="col-lg-3 item-line-booking">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">End Date</label>
-                            <input type="date" name="rental_end_date" class="booking-input" value="{{ $endDate  }}">
+                        <div class="col-lg-3 item-line-booking border-bottom-0 pb-0">
+                            <strong class="text-sm-medium neutral-1000">End Date</strong>
+                            <div class="input-calendar">
+                                <input class="form-control calendar-date" type="text" name="rental_end_date" value="2026-04-03">
+                                <svg class="icon icon-xs svg-icon-ti-ti-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"></path>
+                                    <path d="M16 3v4"></path>
+                                    <path d="M8 3v4"></path>
+                                    <path d="M4 11h16"></path>
+                                    <path d="M11 15h1"></path>
+                                    <path d="M12 15v3"></path>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
 
-
-
-                    {{-- Name --}}
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">Full Name</label>
-                            <input type="text" name="customer_name" class="booking-input" placeholder="Enter your name">
+                    
+                        {{-- Name --}}
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Full Name</label>
+                                <input type="text" name="customer_name" class="form-control " placeholder="Enter your name">
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Email --}}
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">Email</label>
-                            <input type="email" name="customer_email" class="booking-input" placeholder="Enter email">
+                        {{-- Email --}}
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Email</label>
+                                <input type="email" name="customer_email" class="form-control " placeholder="Enter email">
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Phone --}}
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="text-sm-medium neutral-1000">Phone</label>
-                            {!! $phoneInput !!}
+                        {{-- Phone --}}
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label class="text-sm-medium neutral-1000">Phone</label>
+                                {!! $phoneInput !!}
+                            </div>
                         </div>
+
+                        <div class="col-lg-3 extra-info" style="display: none;"></div>
+
+                        {{-- Submit --}}
+                        <div class="col-lg-3 mt-1">
+                            <label class="text-sm-medium neutral-1000"></label>
+                            <button type="submit" class="btn btn-book w-100">
+                                Book Now
+                            </button>
+                        </div>
+
                     </div>
+                </form>
 
-                    <div class="col-lg-3 extra-info" style="display: none;"></div>
+            </div>
 
-                    {{-- Submit --}}
-                    <div class="col-lg-3 mt-1">
-                        <label class="text-sm-medium neutral-1000"></label>
-                        <button type="submit" class="btn btn-book w-100">
-                            Book Now
-                        </button>
-                    </div>
 
-                </div>
-            </form>
         </div>
 
     </div>

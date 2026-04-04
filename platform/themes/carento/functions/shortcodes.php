@@ -1373,7 +1373,7 @@ app()->booted(function (): void {
             );
     });
 
-    Shortcode::register( 'booking-form-style-2', "Booking Form", "Booking Form", function ($shortcode) {
+    Shortcode::register('booking-form-style-2', "Booking Form", "Booking Form", function ($shortcode) {
           
             Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
 
