@@ -5,6 +5,7 @@ namespace Botble\CarRentals\Forms;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Forms\FieldOptions\DescriptionFieldOption;
 use Botble\Base\Forms\FieldOptions\IsDefaultFieldOption;
+use Botble\Base\Forms\FieldOptions\ContentFieldOption;
 use Botble\Base\Forms\FieldOptions\NameFieldOption;
 use Botble\Base\Forms\FieldOptions\MediaImageFieldOption;
 use Botble\Base\Forms\FieldOptions\OnOffFieldOption;
@@ -12,6 +13,7 @@ use Botble\Base\Forms\FieldOptions\SelectFieldOption;
 use Botble\Base\Forms\FieldOptions\StatusFieldOption;
 use Botble\Base\Forms\FieldOptions\TextFieldOption;
 use Botble\Base\Forms\Fields\CoreIconField;
+use Botble\Base\Forms\Fields\EditorField;
 use Botble\Base\Forms\Fields\OnOffField;
 use Botble\Base\Forms\Fields\SelectField;
 use Botble\Base\Forms\Fields\MediaImageField;
@@ -89,6 +91,7 @@ class CarCategoryForm extends FormAbstract
                     ->label(trans('core/base::forms.is_featured'))
                     ->defaultValue(false)
             )
+            ->add('content', EditorField::class, ContentFieldOption::make()->colspan(2))
             ->add('status', SelectField::class, StatusFieldOption::make()->choices(BaseStatusEnum::labels()))
             ->setBreakFieldPoint('status');
     }

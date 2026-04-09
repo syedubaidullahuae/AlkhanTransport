@@ -24,6 +24,10 @@
         .post-content h3 {
             font-size: 20px !important;
         }
+        .post-content th, tr, td{
+            border: 1px solid #ddd !important;
+            padding: 8px !important;
+        }
 
         .btn-whatsapp {
             background-color: #7aa93c;

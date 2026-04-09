@@ -3,6 +3,19 @@
     Theme::layout('full-width');
 @endphp
 
+<style>
+    .booking-sidebar {
+    top: 100px;
+        z-index: revert-layer;
+}
+
+@media (max-width: 991px) {
+    .booking-sidebar {
+        position: static !important;
+    }
+}
+</style>
+
 <div class="page-header pt-30 background-body service-detail-page">
     <div class="custom-container position-relative mx-auto">
         <div class="bg-overlay rounded-12 overflow-hidden">
@@ -24,14 +37,23 @@
     </div>
 </div>
 
-<section class="box-section background-body">
-    <div class="container d-block mt-3 content-detail-post">
-        <h4 class="text-white py-3 neutral-1000 w-75">{{ $service->name }}</h4>
 
-        <div class="box-content-detail-blog mt-4 mb-4">
-            <div class="box-content-info-detail mt-0 pt-0">
-                <div class="content-detail-post">
-                    {!! $service->content !!}
+
+<section class="box-section background-body">
+    <div class="container">
+        <div class="section-box background-body py-96 post-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                         {!! $service->content !!}
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="booking-sidebar sticky-top">
+
+                                {!! do_shortcode('[booking-form-style-2]') !!}
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
