@@ -33,6 +33,8 @@ use Botble\Location\Models\Country;
 use Botble\Location\Models\State;
 use Botble\Shortcode\Compilers\Shortcode as ShortcodeCompiler;
 use Botble\Shortcode\Facades\Shortcode;
+use Botble\Shortcode\Forms\FieldOptions\ShortcodeTabsFieldOption;
+use Botble\Shortcode\Forms\Fields\ShortcodeTabsField;
 use Botble\Shortcode\Forms\ShortcodeForm;
 use Botble\Theme\Facades\Theme;
 use Carbon\Carbon;
@@ -103,7 +105,7 @@ app()->booted(function (): void {
                             $query->whereIn('cr_car_categories.id', $categoryIds);
                         });
                     })
-                    ->when(count($carIds), fn ($builder) => $builder->whereIn('id', $carIds))
+                    ->when(count($carIds), fn($builder) => $builder->whereIn('id', $carIds))
                     ->limit($limit)
                     ->get();
 
@@ -139,7 +141,7 @@ app()->booted(function (): void {
                     UiSelectorFieldOption::make()
                         ->choices(
                             collect(get_list_of_car_styles())
-                                ->mapWithKeys(fn ($label, $key) => [
+                                ->mapWithKeys(fn($label, $key) => [
                                     ($key) => [
                                         'label' => $label,
                                         'image' => Theme::asset()->url("images/shortcodes/cars/$key.png"),
@@ -288,8 +290,7 @@ app()->booted(function (): void {
                     [
                         'order_by' => $sortBy,
                         'paginate' => [
-                            'per_page' => (int) $shortcode->cars_per_page ?: $requestQuery['per_page'] ?: CarRentalsHelper::getCarsPerPage(
-                            ),
+                            'per_page' => (int) $shortcode->cars_per_page ?: $requestQuery['per_page'] ?: CarRentalsHelper::getCarsPerPage(),
                             'current_paged' => $requestQuery['page'] ?: 1,
                         ],
                     ],
@@ -401,7 +402,7 @@ app()->booted(function (): void {
                     UiSelectorFieldOption::make()
                         ->choices(
                             collect(range(1, 3))
-                                ->mapWithKeys(fn ($number) => [
+                                ->mapWithKeys(fn($number) => [
                                     ($style = "style-$number") => [
                                         'label' => __('Style :number', ['number' => $number]),
                                         'image' => Theme::asset()->url("images/shortcodes/car-loan-form/$style.png"),
@@ -652,7 +653,7 @@ app()->booted(function (): void {
 
                     $makes = CarMake::query()
                         ->withCount('cars')
-                        ->when(empty($brandIds) === false, fn ($builder) => $builder->whereIn('id', $brandIds))
+                        ->when(empty($brandIds) === false, fn($builder) => $builder->whereIn('id', $brandIds))
                         ->get();
 
                     return Theme::partial('shortcodes.brands.index', compact('shortcode', 'makes'));
@@ -667,7 +668,7 @@ app()->booted(function (): void {
                         UiSelectorFieldOption::make()
                             ->choices(
                                 collect(range(1, 3))
-                                    ->mapWithKeys(fn ($number) => [
+                                    ->mapWithKeys(fn($number) => [
                                         ("style-$number") => [
                                             'label' => __('Style :number', ['number' => $number]),
                                             'image' => Theme::asset()->url(
@@ -732,7 +733,7 @@ app()->booted(function (): void {
                                 $query->where('status', CarStatusEnum::AVAILABLE);
                             },
                         ])
-                        ->when(count($dealerIds), fn ($builder) => $builder->whereIn('id', $dealerIds))
+                        ->when(count($dealerIds), fn($builder) => $builder->whereIn('id', $dealerIds))
                         ->limit($limit)
                         ->get();
 
@@ -795,6 +796,81 @@ app()->booted(function (): void {
                         TextFieldOption::make()
                             ->label(__('Button Label'))
                             ->placeholder(__('View All Dealers'))
+                    )
+                    ->add(
+                        'button_url',
+                        TextField::class,
+                        TextFieldOption::make()
+                            ->label(__('Button URL'))
+                    );
+            });
+
+
+            Shortcode::register(
+                'client_logoes',
+                "Client Logos",
+                'Client Logos Upload',
+                function (ShortcodeCompiler $shortcode): ?string {
+
+                    $clients = Shortcode::fields()->getTabsData(['logo','name','url','description'], $shortcode);
+
+                    return Theme::partial('shortcodes.client-logos.index', compact('shortcode', 'clients'));
+                }
+            );
+
+            Shortcode::setPreviewImage('client_logoes', Theme::asset()->url('images/shortcodes/brands/style-1.png'));
+            Shortcode::setAdminConfig('client_logoes', function (array $attributes) {
+                return ShortcodeForm::createFromArray($attributes)
+                    ->add(
+                        'title',
+                        TextField::class,
+                        TextFieldOption::make()
+                            ->label(__('Title'))
+                    )
+                    ->add(
+                        'subtitle',
+                        TextField::class,
+                        TextFieldOption::make()
+                            ->label(__('Subtitle'))
+                    )
+
+                    ->add(
+                        'logos',
+                        ShortcodeTabsField::class,
+                        ShortcodeTabsFieldOption::make()
+                            ->attrs([...$attributes,'tab_key' => 'logos'])
+                            ->fields([
+
+                                'logo' => [
+                                    'type' => 'mediaImage',
+                                    'title' => __('Client Logo'),
+                                ],
+
+                                'name' => [
+                                    'type' => 'text',
+                                    'title' => __('Client Name'),
+                                ],
+
+                                'url' => [
+                                    'type' => 'text',
+                                    'title' => __('Client URL'),
+                                ],
+
+                                'description' => [
+                                    'type' => 'textarea',
+                                    'title' => __('Description'),
+                                ],
+
+                            ])
+                            ->label(__('Client Logos'))
+                    )
+
+                    ->add(
+                        'button_label',
+                        TextField::class,
+                        TextFieldOption::make()
+                            ->label(__('Button Label'))
+                            ->placeholder(__('Show All Brands'))
                     )
                     ->add(
                         'button_url',
