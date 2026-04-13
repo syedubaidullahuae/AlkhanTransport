@@ -7,6 +7,7 @@ use Botble\Base\Forms\FieldOptions\CheckboxFieldOption;
 use Botble\Base\Forms\FieldOptions\HtmlFieldOption;
 use Botble\Base\Forms\FieldOptions\RadioFieldOption;
 use Botble\Base\Forms\Fields\EmailField;
+use Botble\Base\Forms\Fields\HiddenField;
 use Botble\Base\Forms\Fields\HtmlField;
 use Botble\Base\Forms\Fields\OnOffCheckboxField;
 use Botble\Base\Forms\Fields\PasswordField;
@@ -19,7 +20,12 @@ use Botble\CarRentals\Forms\Fronts\Auth\FieldOptions\PhoneNumberFieldOption;
 use Botble\CarRentals\Forms\Fronts\Auth\FieldOptions\TextFieldOption;
 use Botble\CarRentals\Http\Requests\Fronts\Auth\RegisterRequest;
 use Botble\CarRentals\Models\Customer;
+use Botble\CarRentals\Models\CustomerCarType;
 use Botble\Theme\Facades\Theme;
+
+use Botble\Base\Forms\Fields\SelectField;
+use Botble\Base\Forms\FieldOptions\SelectFieldOption;
+
 
 class RegisterForm extends AuthForm
 {
@@ -70,6 +76,19 @@ class RegisterForm extends AuthForm
                     ->addAttribute('autocomplete', 'tel')
             )
             ->add(
+                'vehicle_types',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label('Vehicle Types')
+                    ->choices(
+                        CustomerCarType::query()->wherePublished()->pluck('name', 'id')->all()
+                    )
+                    ->multiple()
+                    ->addAttribute('class', 'form-control select2')
+                    ->addAttribute('id', 'vehicle_types')
+            )
+            
+            ->add(
                 'password',
                 PasswordField::class,
                 TextFieldOption::make()
@@ -95,22 +114,9 @@ class RegisterForm extends AuthForm
                         ->defaultValue(0)
                 );
             })
-            ->when(get_car_rentals_setting('show_terms_and_policy_acceptance_checkbox', true), function (RegisterForm $form): void {
-                $form->add(
-                    'agree_terms_and_policy',
-                    OnOffCheckboxField::class,
-                    CheckboxFieldOption::make()
-                        ->when(
-                            $privacyPolicyUrl = Theme::termAndPrivacyPolicyUrl(),
-                            function (CheckboxFieldOption $fieldOption, string $url): void {
-                                $fieldOption->label(__('I agree to the :link', ['link' => Html::link($url, __('Terms and Privacy Policy'), attributes: ['class' => 'text-decoration-underline', 'target' => '_blank'])]));
-                            }
-                        )
-                        ->when(! $privacyPolicyUrl, function (CheckboxFieldOption $fieldOption): void {
-                            $fieldOption->label(__('I agree to the Terms and Privacy Policy'));
-                        })
-                );
-            })
+
+
+            
             ->submitButton(__('Register'), 'ti ti-arrow-narrow-right')
             ->add(
                 'login',
@@ -118,6 +124,7 @@ class RegisterForm extends AuthForm
                 HtmlFieldOption::make()
                     ->view('plugins/car-rentals::customers.includes.login-link')
             )
+          
             ->add('filters', HtmlField::class, [
                 'html' => apply_filters(BASE_FILTER_AFTER_LOGIN_OR_REGISTER_FORM, null, Customer::class),
             ]);

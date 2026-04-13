@@ -164,6 +164,7 @@ Route::group(['namespace' => 'Botble\CarRentals\Http\Controllers'], function ():
             Route::resource('car-colors', 'Cars\CarColorController')->parameters(['' => 'car-colors']);
             Route::resource('car-amenity-categories', 'Cars\CarAmenityCategoryController')->parameters(['' => 'car-amenity-categories']);
             Route::resource('car-amenities', 'Cars\CarAmenityController')->parameters(['' => 'car-amenities']);
+            Route::resource('customer-car-types', 'Cars\CustomerCarTypeController')->parameters(['' => 'customer-car-types']);
             Route::resource('car-maintenance-histories', 'Cars\CarMaintenanceHistoryController')->parameters(['' => 'car-maintenance-histories']);
 
             Route::group(['prefix' => 'car-categories', 'as' => 'car-categories.'], function (): void {

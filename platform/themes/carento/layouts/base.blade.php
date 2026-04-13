@@ -24,7 +24,10 @@
         .post-content h3 {
             font-size: 20px !important;
         }
-        .post-content th, tr, td{
+
+        .post-content th,
+        tr,
+        td {
             border: 1px solid #ddd !important;
             padding: 8px !important;
         }
@@ -35,6 +38,68 @@
             padding: 10px 20px;
             border-radius: 8px;
         }
+        .select2-selection{
+            height: 48px !important;
+        }
+        .select2-dropdown .select2-results__option[aria-selected=true] {
+            background-color: #7aa93c !important;
+        }
+        .select2-selection__clear{
+            display: none;
+        }
+        .select2-selection__choice{
+            background-color: #7aa93c !important;
+            border: none !important;
+            color: #fff !important;
+            padding: 4px 10px !important;
+            border-radius: 20px !important;
+            font-size: 13px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    min-height: 48px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.select2-container--default .select2-selection--multiple:focus {
+    border-color: #84cc16; /* green like your theme */
+    box-shadow: 0 0 0 2px rgba(132, 204, 22, 0.2);
+}
+
+.select2-container--default .select2-selection__choice {
+    background-color: #84cc16;
+    border: none;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+
+.select2-container {
+    width: 100% !important;
+}
+.select2-selection {
+    min-height: 48px !important;
+}
+
+.select2-container--default .select2-selection__choice__remove {
+    color: #fff;
+    font-size: 14px;
+    margin-right: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.select2-container--default .select2-selection__choice__remove:hover {
+    color: #ff4d4f; /* red on hover */
+}
     </style>
 
 </head>
@@ -141,8 +206,8 @@
                                 </div>
                             </div>
 
-                             @php
-                                $form = FormBuilder::create(\Botble\CarRentals\Forms\Fronts\Customers\PhoneBookinFrom::class);
+                            @php
+                            $form = FormBuilder::create(\Botble\CarRentals\Forms\Fronts\Customers\PhoneBookinFrom::class);
                             @endphp
 
                             {{-- Phone --}}
@@ -192,8 +257,8 @@
         'use strict';
 
         window.siteConfig = {
-            locale: @json(app() -> getLocale()),
-            dateRangeSeparator: @json(' '.__('to'). ' ')
+            locale: @json(app()->getLocale()),
+            dateRangeSeparator: @json(' '.__('to').' ')
         };
     </script>
 
@@ -211,36 +276,20 @@
                 e.preventDefault();
 
                 var carSlug = $(this).data('slug');
-
-                // Show loading
-
-
-                // Open modal
                 modal.show();
-
-                console.log(carSlug)
-
                 $('#cat_id').val(carSlug);
 
                 var CarTitle = $(this).data('title');
 
                 $('#car_title').text(CarTitle);
 
-
-                // AJAX request
-                // $.ajax({
-                //     url: '/rental-form/' + carSlug,
-                //     type: 'GET',
-                //     success: function(response) {
-                //         modalBody.html(response.data);
-                //     },
-                //     error: function() {
-                //         modalBody.html('<div class="text-danger">Failed to load form</div>');
-                //     }
-                // });
-
             });
+        });
 
+
+        $("#vehicle_types").select2({
+            width: '100%',
+            allowClear: true
         });
     </script>
 </body>

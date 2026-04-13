@@ -43,14 +43,28 @@ class RegisterController extends BaseController
             session(['url.intended' => url()->previous()]);
         }
 
+         $version = get_cms_version();
+
+        Theme::asset()->add(
+            'front-car-rentals-css',
+            'vendor/core/plugins/car-rentals/css/front-theme.css',
+            version: $version
+        );
+
         Theme::asset()
             ->container('footer')
-            ->usePath(false)
-            ->add('js-validation', 'vendor/core/core/js-validation/js/js-validation.js', ['jquery'], version: '1.0.1');
+            
+            ->add('js-validation', 'vendor/core/core/js-validation/js/js-validation.js', ['jquery'], version: '1.0.1')
+            ->add('register-js', 'vendor/core/plugins/car-rentals/js/register.js', ['jquery', 'js-validation'], version: '1.0.1');
+            
+            
+       
 
         add_filter(THEME_FRONT_FOOTER, function ($html) {
             return $html . JsValidator::formRequest(RegisterRequest::class)->render();
         });
+
+
 
         return Theme::scope(
             'car-rentals.customers.register',
@@ -61,6 +75,8 @@ class RegisterController extends BaseController
 
     public function register(RegisterRequest $request)
     {
+
+       
         abort_unless(CarRentalsHelper::isEnabledCustomerRegistration(), 404);
 
         do_action('customer_register_validation', $request);
@@ -80,7 +96,11 @@ class RegisterController extends BaseController
 
         $customer->confirmed_at = $isEmailVerifyEnabled ? null : Carbon::now();
         $customer->is_vendor = $request->boolean('is_vendor');
+
+       
         $customer->save();
+
+        $customer->vehicleTypes()->sync($request->vehicle_types);
 
         event(new Registered($customer));
 

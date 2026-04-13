@@ -4,6 +4,7 @@ namespace Botble\CarRentals\Http\Requests\Fronts\Auth;
 
 use Botble\Base\Facades\BaseHelper;
 use Botble\Base\Rules\EmailRule;
+use Botble\CarRentals\Models\CarType;
 use Botble\CarRentals\Models\Customer;
 use Botble\Support\Http\Requests\Request;
 use Illuminate\Validation\Rule;
@@ -26,11 +27,13 @@ class RegisterRequest extends Request
             ],
             'password' => ['required', 'min:6', 'confirmed'],
             'is_vendor' => ['sometimes', 'boolean'],
+            'car_types' => ['sometimes', 'array'],
+            'car_types.*' => ['integer', Rule::exists((new CarType())->getTable(), 'id')],
         ];
 
-        if (get_car_rentals_setting('show_terms_and_policy_acceptance_checkbox', true)) {
-            $rules['agree_terms_and_policy'] = ['required', 'accepted:1'];
-        }
+        // if (get_car_rentals_setting('show_terms_and_policy_acceptance_checkbox', true)) {
+        //     $rules['agree_terms_and_policy'] = ['required', 'accepted:1'];
+        // }
 
         return apply_filters('car_rentals_customer_registration_form_validation_rules', $rules);
     }
@@ -42,6 +45,7 @@ class RegisterRequest extends Request
             'email' => __('Email'),
             'password' => __('Password'),
             'phone' => __('Phone'),
+            'car_types' => __('Car types'),
             'agree_terms_and_policy' => __('Term and Policy'),
         ]);
     }

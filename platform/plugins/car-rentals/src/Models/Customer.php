@@ -158,6 +158,16 @@ class Customer extends BaseModel implements AuthenticatableContract, Authorizabl
         return $this->hasMany(Booking::class, 'customer_id');
     }
 
+    public function vehicleTypes()
+    {
+        return $this->belongsToMany(
+            CustomerCarType::class,
+            'customer_vehicle_types',
+            'customer_id',
+            'vehicle_type_id'
+        );
+    }
+
     protected static function booted(): void
     {
         static::deleting(function (Customer $customer): void {

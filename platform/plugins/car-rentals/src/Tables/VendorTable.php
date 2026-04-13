@@ -50,6 +50,19 @@ class VendorTable extends TableAbstract
                     }),
                 EmailColumn::make(),
                 Column::make('phone'),
+
+                FormattedColumn::make('vehicle_types')
+                    ->title('Vehicle Types')
+                    ->renderUsing(function ($column) {
+
+                        $types = $column->getItem()->vehicleTypes->pluck('name');
+
+                        return $types->map(
+                            fn($t) =>
+                            '<span class="badge bg-success me-1">' . $t . '</span>'
+                        )->implode(' ') ?: '-';
+                    }),
+
                 FormattedColumn::make('total_cars')
                     ->title(trans('plugins/car-rentals::car-rentals.vendor.total_cars'))
                     ->width(100)

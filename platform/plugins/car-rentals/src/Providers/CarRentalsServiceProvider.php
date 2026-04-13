@@ -339,6 +339,15 @@ class CarRentalsServiceProvider extends ServiceProvider
                     'icon' => 'ti ti-cube-plus',
                     'route' => 'car-rentals.car-amenities.index',
                 ])
+
+                 ->registerItem([
+                    'id' => 'cms-plugins-car-rentals-customer_car_type',
+                    'priority' => 200,
+                    'parent_id' => 'cms-plugins-car-rentals-attributes',
+                    'name' => 'Customer CAR Type',
+                    'icon' => 'ti ti-cube-plus',
+                    'route' => 'car-rentals.customer-car-types.index',
+                ])
                 ->registerItem([
                     'id' => 'cms-plugins-car-rentals-messages',
                     'priority' => 1,
