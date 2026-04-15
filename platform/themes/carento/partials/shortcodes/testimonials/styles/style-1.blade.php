@@ -18,7 +18,8 @@
             </div>
         </div>
     </div>
-    <div class="block-testimonials">
+    <div class="">
+        <div class="container">
         <div class="container-testimonials">
             <div class="container-slider ps-0">
                 <div class="box-swiper mt-30">
@@ -64,6 +65,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </section>

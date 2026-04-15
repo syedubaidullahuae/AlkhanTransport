@@ -27,7 +27,7 @@
                                 </a>
                             </div>
                             <div id="{{ $id }}" @class(['collapse',  'show' => $loop->first]) data-bs-parent=".accordion">
-                                <p class="pt-0 pb-4 card-body background-body">{!! BaseHelper::clean($faq->answer) !!}</p>
+                                <div class="pt-0 pb-4 card-body background-body">{!! BaseHelper::clean($faq->answer) !!}</div>
                             </div>
                         </div>
                     </div>

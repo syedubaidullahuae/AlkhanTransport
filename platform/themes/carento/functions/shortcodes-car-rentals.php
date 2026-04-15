@@ -812,7 +812,12 @@ app()->booted(function (): void {
                 'Client Logos Upload',
                 function (ShortcodeCompiler $shortcode): ?string {
 
-                    $clients = Shortcode::fields()->getTabsData(['logo','name','url','description'], $shortcode);
+                    //$clients = Shortcode::fields()->getTabsData(['logo','name','url','description'], $shortcode);
+                   $clients = collect(
+                        Shortcode::fields()->getTabsData(['logo','name','url','description'], $shortcode)
+                    );  
+
+                   
 
                     return Theme::partial('shortcodes.client-logos.index', compact('shortcode', 'clients'));
                 }
@@ -821,6 +826,27 @@ app()->booted(function (): void {
             Shortcode::setPreviewImage('client_logoes', Theme::asset()->url('images/shortcodes/brands/style-1.png'));
             Shortcode::setAdminConfig('client_logoes', function (array $attributes) {
                 return ShortcodeForm::createFromArray($attributes)
+
+                ->add(
+                        'style',
+                        UiSelectorField::class,
+                        UiSelectorFieldOption::make()
+                            ->choices(
+                                collect(range(1, 3))
+                                    ->mapWithKeys(fn($number) => [
+                                        ("style-$number") => [
+                                            'label' => __('Style :number', ['number' => $number]),
+                                            'image' => Theme::asset()->url(
+                                                "images/shortcodes/brands/style-$number.png"
+                                            ),
+                                        ],
+                                    ])
+                                    ->all()
+                            )
+                            ->selected(Arr::get($attributes, 'style', 'style-1'))
+                            ->numberItemsPerRow(3)
+                    )
+
                     ->add(
                         'title',
                         TextField::class,

@@ -6,6 +6,7 @@ use Botble\Base\Forms\FieldOptions\DatePickerFieldOption;
 use Botble\Base\Forms\FieldOptions\EmailFieldOption;
 use Botble\Base\Forms\FieldOptions\OnOffFieldOption;
 use Botble\Base\Forms\FieldOptions\PhoneNumberFieldOption;
+use Botble\Base\Forms\FieldOptions\SelectFieldOption;
 use Botble\Base\Forms\FieldOptions\StatusFieldOption;
 use Botble\Base\Forms\FieldOptions\TextFieldOption;
 use Botble\Base\Forms\Fields\DatePickerField;
@@ -19,6 +20,7 @@ use Botble\CarRentals\Enums\CustomerStatusEnum;
 use Botble\CarRentals\Facades\CarRentalsHelper;
 use Botble\CarRentals\Http\Requests\StoreCustomerRequest;
 use Botble\CarRentals\Models\Customer;
+use Botble\CarRentals\Models\CustomerCarType;
 
 class CustomerForm extends FormAbstract
 {
@@ -72,6 +74,22 @@ class CustomerForm extends FormAbstract
                     ->label(trans('plugins/car-rentals::car-rentals.customer.forms.dob'))
                     ->colspan(1)
             )
+            ->add(
+                'vehicle_types',
+                SelectField::class,
+                SelectFieldOption::make()
+                    ->label('Vehicle types')
+                    ->searchable()
+                    ->multiple()
+                    ->choices(CustomerCarType::query()->wherePublished()->pluck('name', 'id')->all())
+                     ->selected(
+                        optional($this->getModel())
+                            ->vehicleTypes
+                            ->pluck('id')
+                            ->toArray()
+                    )
+                    ->emptyValue("Vehicle types")
+            )
             ->when($this->getModel()->getKey(), function (CustomerForm $form): void {
                 $form->add(
                     'is_change_password',
@@ -102,6 +120,8 @@ class CustomerForm extends FormAbstract
                     ->maxLength(60)
                     ->colspan(1)
             )
+            
+
             ->add('status', SelectField::class, StatusFieldOption::make()->choices(CustomerStatusEnum::labels()))
             ->when(CarRentalsHelper::isMultiVendorEnabled(), function (CustomerForm $form): void {
                 $form->add(

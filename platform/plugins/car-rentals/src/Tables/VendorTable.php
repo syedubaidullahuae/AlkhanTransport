@@ -59,7 +59,7 @@ class VendorTable extends TableAbstract
 
                         return $types->map(
                             fn($t) =>
-                            '<span class="badge bg-success me-1">' . $t . '</span>'
+                            '<span class="badge bg-primary me-1 text-white">' . $t . '</span>'
                         )->implode(' ') ?: '-';
                     }),
 

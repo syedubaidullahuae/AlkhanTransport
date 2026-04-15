@@ -38,6 +38,18 @@ class CustomerTable extends TableAbstract
                 NameColumn::make('name')->route('car-rentals.customers.edit'),
                 EmailColumn::make(),
                 FormattedColumn::make('phone')->withEmptyState(),
+                FormattedColumn::make('vehicle_types')
+                    ->title('Vehicle Types')
+                    ->renderUsing(function ($column) {
+
+                        $types = $column->getItem()->vehicleTypes->pluck('name');
+
+                        return $types->map(
+                            fn($t) =>
+                            '<span class="badge bg-primary me-1 text-white">' . $t . '</span>'
+                        )->implode(' ') ?: '-';
+                    }),
+
                 FormattedColumn::make('is_vendor')
                     ->title(trans('plugins/car-rentals::car-rentals.customer.is_vendor'))
                     ->width(100)

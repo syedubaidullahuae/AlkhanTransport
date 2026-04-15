@@ -43,8 +43,13 @@ class CustomerController extends BaseController
 
     public function store(StoreCustomerRequest $request)
     {
+       
+        
         $form = CustomerForm::create()->setRequest($request);
         $form->save();
+         $customer = $form->getModel();
+
+        $customer->vehicleTypes()->sync($request->vehicle_types ?? []);
 
         return $this
             ->httpResponse()
@@ -70,7 +75,13 @@ class CustomerController extends BaseController
             $model = $form->getModel();
 
             $model->update($request->validated());
+
+             $customer = $form->getModel();
+
+        $customer->vehicleTypes()->sync($request->vehicle_types ?? []);
         });
+
+        
 
         return $this
             ->httpResponse()

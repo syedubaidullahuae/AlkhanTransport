@@ -4,7 +4,9 @@ namespace Botble\CarRentals\Forms\Fronts\Auth;
 
 use Botble\Base\Facades\Html;
 use Botble\Base\Forms\FieldOptions\CheckboxFieldOption;
+use Botble\Base\Forms\FieldOptions\HiddenFieldOption;
 use Botble\Base\Forms\FieldOptions\HtmlFieldOption;
+use Botble\Base\Forms\FieldOptions\MultiChecklistFieldOption;
 use Botble\Base\Forms\FieldOptions\RadioFieldOption;
 use Botble\Base\Forms\Fields\EmailField;
 use Botble\Base\Forms\Fields\HiddenField;
@@ -25,7 +27,7 @@ use Botble\Theme\Facades\Theme;
 
 use Botble\Base\Forms\Fields\SelectField;
 use Botble\Base\Forms\FieldOptions\SelectFieldOption;
-
+use Botble\Base\Forms\Fields\MultiCheckListField;
 
 class RegisterForm extends AuthForm
 {
@@ -37,6 +39,8 @@ class RegisterForm extends AuthForm
     public function setup(): void
     {
         parent::setup();
+        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.css', version: get_cms_version());
+        Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
 
         $this
             ->setUrl(route('customer.register.post'))
@@ -76,17 +80,40 @@ class RegisterForm extends AuthForm
                     ->addAttribute('autocomplete', 'tel')
             )
             ->add(
-                'vehicle_types',
-                SelectField::class,
-                SelectFieldOption::make()
-                    ->label('Vehicle Types')
-                    ->choices(
-                        CustomerCarType::query()->wherePublished()->pluck('name', 'id')->all()
-                    )
-                    ->multiple()
-                    ->addAttribute('class', 'form-control select2')
-                    ->addAttribute('id', 'vehicle_types')
+                'vehicles',
+                TextField::class,
+                TextFieldOption::make()
+                    ->label(__('Vehicle Types'))
+                    ->placeholder("Select vehicle types you want to rent")
+                    ->icon('ti ti-car')
+                    ->addAttribute('id', 'vehicles')
             )
+            ->add(
+                'vehicle_types_container',
+                HtmlField::class,
+                HtmlFieldOption::make()
+                    ->content('<div id="vehicle_types_container"></div>')
+            )
+            // ->add(
+            //     'vehicle_types[]',
+            //     'hidden',
+            //     TextFieldOption::make()
+            //      ->addAttribute('id', 'vehicle_types')
+            // )
+
+
+            // ->add(
+            //     'vehicle_types',
+            //     SelectField::class,
+            //     SelectFieldOption::make()
+            //         ->label('Vehicle Types')
+            //         ->choices(
+            //             CustomerCarType::query()->wherePublished()->pluck('name', 'id')->all()
+            //         )
+            //         ->multiple()
+            //         ->addAttribute('class', 'form-control select2')
+            //         ->addAttribute('id', 'vehicle_types')
+            // )
             
             ->add(
                 'password',

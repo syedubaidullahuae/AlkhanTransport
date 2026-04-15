@@ -2,84 +2,66 @@
 Theme::set('breadcrumb_simple', true);
 @endphp
 
+
+
 {!! $form->renderForm() !!}
 
-<div class="modal fade" id="addCarModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h5>Add Car</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="vehicleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content mb-30 background-card  p-4 rounded-3 mt-lg-0 ">
+
+            <div class="modal-header" style="border-bottom: none;">
+                <h5 class="modal-title neutral-1000 mb-2" id="car_title">Select Vechical Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body" style="max-height: 400px; overflow-y: auto; padding:0px">
-                <div class="booking-form"  style="margin-bottom: 0px;">
-
+            <div class="modal-body" style="padding: 0px;">
+                <div class="booking-form">
                     <div class="content-booking-form">
-
-
-
                         <div class="mb-3 position-relative">
                             <fieldset class="form-fieldset fieldset-for-multi-check-list">
                                 <div class="multi-check-list-wrapper">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <label class="form-check">
-                                                <input type="checkbox" id="service-ids-item-1" class="form-check-input" name="vendor_car[]"  value="bus" >
-
-                                                <span class="form-check-label">
-                                                    Bus
-                                                </span>
-
-                                            </label>
-
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label class="form-check">
-                                                <input type="checkbox" id="service-ids-item-1" class="form-check-input" name="vendor_car[]"  value="school-bus" >
-
-                                                <span class="form-check-label">
-                                                    School Bus
-                                                </span>
-
-                                            </label>
-
-                                        </div>
 
 
-                                        <div class="col-12">
-                                            <label class="form-check">
-                                                <input type="checkbox" id="service-ids-item-1" class="form-check-input" name="vendor_car[]"  value="luxury-bus" >
+                                    @php
 
-                                                <span class="form-check-label">
-                                                    Luxury Bus
-                                                </span>
+                                    $vehicleTypes = \Botble\CarRentals\Models\CustomerCarType::query()
+                                    ->wherePublished()
+                                    ->pluck('name', 'id')
+                                    ->toArray();
 
-                                            </label>
+                                    @endphp
 
-                                        </div>
-                                    </div>
+                                    @foreach($vehicleTypes as $id => $name)
 
+                                    <label class="form-check">
+                                        <input type="checkbox"  name="vehicle_types[]" class="form-check-input" value="{{ $id }}">
 
+                                        <span class="form-check-label">
+                                            {{ $name }}
+                                        </span>
+
+                                    </label>
+                                    @endforeach
 
                                 </div>
                             </fieldset>
                         </div>
+
                     </div>
 
                 </div>
 
-                
-            </div>
 
+
+            </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="saveCarBtn">Save</button>
+                <button type="button" id="applyVehicle" class="btn btn-primary">
+                    Save
+                </button>
             </div>
 
         </div>
-
     </div>
 </div>
