@@ -13,6 +13,7 @@ use Botble\CarRentals\Http\Controllers\Settings\InvoiceTemplateSettingController
 use Botble\CarRentals\Http\Controllers\Settings\ReviewSettingController;
 use Botble\CarRentals\Http\Controllers\Settings\TaxSettingController;
 use Botble\CarRentals\Http\Controllers\Settings\WhatappSettingController;
+use Botble\CarRentals\Http\Controllers\Settings\AppinfoSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'Botble\CarRentals\Http\Controllers'], function (): void {
@@ -282,6 +283,9 @@ Route::group(['namespace' => 'Botble\CarRentals\Http\Controllers'], function ():
 
                 Route::match(['GET', 'POST'], 'whatsapp-booking', [WhatappSettingController::class, 'edit'])->name('whatsapp-booking');
                 Route::put('whatsapp-booking', [WhatappSettingController::class, 'update'])->name('whatsapp-booking.update');
+
+                Route::match(['GET', 'POST'], 'app-info', [AppinfoSettingController::class, 'edit'])->name('app-info');
+                Route::put('app-info', [AppinfoSettingController::class, 'update'])->name('app-info.update');
             }
         );
 

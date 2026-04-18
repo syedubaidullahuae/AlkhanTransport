@@ -39,7 +39,33 @@
             border-radius: 8px;
         }
 
-       
+        .vehicle-item {
+            background-color: gray !important;
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 6px;
+        }
+
+        .vehicle-item .btn-close {
+            width: 1px;
+            height: 1px;
+            opacity: 0.8;
+        }
+
+        .btn-add {
+            background: var(--bs-brand-2);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 12px;
+        }
+        .btn-add:hover {
+            background: var(--bs-brand-2);
+            color: #000;
+
+        }
+
+
+        
     </style>
 
 </head>
@@ -198,7 +224,7 @@
 
         window.siteConfig = {
             locale: @json(app()->getLocale()),
-            dateRangeSeparator: @json(' '.__('to'). ' ')
+            dateRangeSeparator: @json(' '.__('to').' ')
         };
     </script>
 
@@ -237,32 +263,82 @@
 
         $(document).ready(function() {
 
+            // Open modal
             $('#vehicles').click(function(e) {
-                e.preventDefault(); // stop dropdown
-
-                // open modal instead
+                e.preventDefault();
                 var modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
                 modal.show();
             });
 
+            // Apply selection
+
+            $('#vehicleModal input[type="checkbox"]').on('change', function() {
+
+                let checked = $('#vehicleModal input[type="checkbox"]:checked');
+
+                if (checked.length > 4) {
+
+                    // undo last check
+                    $(this).prop('checked', false);
+
+                    // show message (Botble / Bootstrap style)
+                    alert('You can select maximum 4 vehicle types');
+                    return;
+
+                }
+            });
+
             $('#applyVehicle').on('click', function() {
 
+                let checked = $('#vehicleModal input[type="checkbox"]:checked');
+
+                // ❌ Limit to 4
+                if (checked.length > 4) {
+                    alert('You can select maximum 4 vehicle types');
+                    return;
+                }
+
                 let container = $('#vehicle_types_container');
-                container.html(''); // clear old values
+                let display = $('#selected_vehicles');
 
-                $('#vehicleModal input[type="checkbox"]:checked').each(function() {
+                container.html('');
+                display.html('');
 
+                checked.each(function() {
+
+                    let id = $(this).val();
+                    let name = $(this).data('name');
+
+                    // Hidden input
                     container.append(
-                        `<input type="hidden" name="vehicle_types[]" value="${$(this).val()}">`
+                        `<input type="hidden" name="vehicle_types[]" value="${id}">`
                     );
 
+                    // Display with remove button
+                    display.append(`
+                    <span class="badge bg-primary text-white me-1 vehicle-item d-inline-flex align-items-center mb-2">
+                    ${name}
+                    <button type="button" class="btn-close btn-close-white ms-2 remove-vehicle" data-id="${id}"></button>
+                </span>
+                `);
                 });
 
-                // close modal
+                // Close modal
                 bootstrap.Modal.getInstance(document.getElementById('vehicleModal')).hide();
             });
 
-        })
+            $(document).on('click', '.remove-vehicle', function() {
+                let id = $(this).data('id');
+                $(`#vehicle_types_container input[value="${id}"]`).remove();
+
+                $(this).closest('.vehicle-item').remove();
+
+                $(`#vehicleModal input[value="${id}"]`).prop('checked', false);
+
+                $('#vehicleModal input[type="checkbox"]').prop('disabled', false);
+            });
+
+        });
     </script>
 </body>
 

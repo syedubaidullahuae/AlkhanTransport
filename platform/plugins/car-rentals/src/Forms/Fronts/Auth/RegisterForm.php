@@ -79,41 +79,46 @@ class RegisterForm extends AuthForm
                     ->withCountryCodeSelection()
                     ->addAttribute('autocomplete', 'tel')
             )
+            // ->add(
+            //     'vehicles',
+            //     TextField::class,
+            //     TextFieldOption::make()
+            //         ->label(__('Vehicle Types'))
+            //         ->placeholder("Select vehicle types you want to rent")
+            //         ->icon('ti ti-car')
+            //         ->addAttribute('id', 'vehicles')
+            // )
             ->add(
-                'vehicles',
-                TextField::class,
-                TextFieldOption::make()
-                    ->label(__('Vehicle Types'))
-                    ->placeholder("Select vehicle types you want to rent")
-                    ->icon('ti ti-car')
-                    ->addAttribute('id', 'vehicles')
-            )
+                    'vehicles_button',
+                    HtmlField::class,
+                    HtmlFieldOption::make()
+                        ->content('
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                
+                                <label class="form-label mb-0">
+                                    Add Vehicle
+                                </label>
+
+                                <button type="button" id="vehicles" class="btn btn-add">
+                                    <i class="ti ti-car"></i> Add
+                                </button>
+
+                            </div>
+
+                            <div id="selected_vehicles" class="mb-2"></div>
+                            <div id="vehicle_types_container"></div>
+                        ')
+                )
             ->add(
                 'vehicle_types_container',
                 HtmlField::class,
                 HtmlFieldOption::make()
-                    ->content('<div id="vehicle_types_container"></div>')
+                    ->content('
+                        <div id="selected_vehicles"></div>
+                        <div id="vehicle_types_container"></div>
+                    ')
             )
-            // ->add(
-            //     'vehicle_types[]',
-            //     'hidden',
-            //     TextFieldOption::make()
-            //      ->addAttribute('id', 'vehicle_types')
-            // )
 
-
-            // ->add(
-            //     'vehicle_types',
-            //     SelectField::class,
-            //     SelectFieldOption::make()
-            //         ->label('Vehicle Types')
-            //         ->choices(
-            //             CustomerCarType::query()->wherePublished()->pluck('name', 'id')->all()
-            //         )
-            //         ->multiple()
-            //         ->addAttribute('class', 'form-control select2')
-            //         ->addAttribute('id', 'vehicle_types')
-            // )
             
             ->add(
                 'password',

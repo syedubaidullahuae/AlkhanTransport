@@ -68,6 +68,12 @@ class SettingCarRentalsPanelSection extends PanelSection
                     ->withDescription("WhatsApp booking integration for cars")
                     ->withPriority(180)
                     ->withRoute('car-rentals.settings.whatsapp-booking'),
+                PanelSectionItem::make('app-info')
+                    ->setTitle('App Info')
+                    ->withIcon('ti ti-device-mobile')
+                    ->withDescription('Manage app name, email, phone')
+                    ->withPriority(180)
+                    ->withRoute('car-rentals.settings.app-info'),
             ]);
     }
 }

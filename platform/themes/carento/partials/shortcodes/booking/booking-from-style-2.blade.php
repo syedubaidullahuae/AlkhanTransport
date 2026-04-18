@@ -85,13 +85,13 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
                 <div class="mb-3 position-relative">
 
                     <label class="form-label  required" for="customer_name">Full Name <span class="text-danger">*</span></label>
-                    <input type="text" name="customer_name" id="customer_name" class="" placeholder="Enter Full Name" >
+                    <input type="text" name="customer_name" id="customer_name" class="" placeholder="Enter your full name" >
                 </div>
 
                 <div class="mb-3 position-relative">
 
                     <label class="form-label  required" for="customer_email"> Email  <span class="text-danger">*</span></label>
-                    <input type="email" name="customer_email" id="customer_email" class=""  placeholder="Enter Email">
+                    <input type="email" name="customer_email" id="customer_email" class=""  placeholder="Enter your email">
                 </div>
 
                 <div class="mb-3 position-relative">

@@ -36,7 +36,7 @@ Theme::set('breadcrumb_simple', true);
                                     @foreach($vehicleTypes as $id => $name)
 
                                     <label class="form-check">
-                                        <input type="checkbox"  name="vehicle_types[]" class="form-check-input" value="{{ $id }}">
+                                        <input type="checkbox" name="vehicle_types[]" class="form-check-input" value="{{ $id }}" data-name="{{ $name }}">
 
                                         <span class="form-check-label">
                                             {{ $name }}
@@ -48,13 +48,8 @@ Theme::set('breadcrumb_simple', true);
                                 </div>
                             </fieldset>
                         </div>
-
                     </div>
-
                 </div>
-
-
-
             </div>
             <div class="modal-footer">
                 <button type="button" id="applyVehicle" class="btn btn-primary">

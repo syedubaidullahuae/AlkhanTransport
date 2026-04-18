@@ -139,7 +139,7 @@ class CarForm extends FormAbstract
                     ->colspan(2)
                     ->placeholder(trans('plugins/car-rentals::car-rentals.car.placeholders.description'))
             )
-            ->add('content', EditorField::class, ContentFieldOption::make()->colspan(2))
+            ->add('content', EditorField::class, ContentFieldOption::make()->colspan(2)->helperText('Shortcode: [company_name]'))
             ->when(
                 is_plugin_active('location'),
                 fn(FormAbstract $form) => $form
