@@ -45,6 +45,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
+                        {!! str_replace('[company_name]', setting('car_rentals_app_name'), $service->content) !!}
                          {!! $service->content !!}
                     </div>
                     <div class="col-lg-4">

@@ -26,6 +26,10 @@
                                 <a class="text-xl-bold neutral-1000" href="{{ $service->url }}">{{ $service->name }}</a>
 
                                 @if ($description = $service->description)
+                                    @php
+                                        $description = str_replace('[company_name]', setting('car_rentals_app_name'), $service->description);
+
+                                    @endphp
                                     <p class="text-md-medium neutral-500 mt-2 truncate-3-custom">{!! BaseHelper::clean($description) !!}</p>
                                 @endif
                             </div>
