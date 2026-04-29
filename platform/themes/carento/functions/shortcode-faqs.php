@@ -34,7 +34,7 @@ app()->booted(function (): void {
         }
 
         $faqs = $query
-            ->wherePublished()->latest()
+            ->wherePublished()
             ->limit($shortcode->limit ?: 4)
             ->get();
 

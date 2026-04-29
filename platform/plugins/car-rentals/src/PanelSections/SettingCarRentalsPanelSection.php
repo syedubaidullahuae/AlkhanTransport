@@ -74,6 +74,12 @@ class SettingCarRentalsPanelSection extends PanelSection
                     ->withDescription('Manage app name, email, phone')
                     ->withPriority(180)
                     ->withRoute('car-rentals.settings.app-info'),
+                PanelSectionItem::make('seo')
+                    ->setTitle('Seo')
+                    ->withIcon('ti ti-world')
+                    ->withDescription('Index and No index ')
+                    ->withPriority(200)
+                    ->withRoute('car-rentals.settings.seo'),
             ]);
     }
 }

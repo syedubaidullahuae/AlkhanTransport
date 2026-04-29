@@ -14,6 +14,8 @@ use Botble\CarRentals\Http\Controllers\Settings\ReviewSettingController;
 use Botble\CarRentals\Http\Controllers\Settings\TaxSettingController;
 use Botble\CarRentals\Http\Controllers\Settings\WhatappSettingController;
 use Botble\CarRentals\Http\Controllers\Settings\AppinfoSettingController;
+use Botble\CarRentals\Http\Controllers\Settings\SeoSettingController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'Botble\CarRentals\Http\Controllers'], function (): void {
@@ -286,6 +288,9 @@ Route::group(['namespace' => 'Botble\CarRentals\Http\Controllers'], function ():
 
                 Route::match(['GET', 'POST'], 'app-info', [AppinfoSettingController::class, 'edit'])->name('app-info');
                 Route::put('app-info', [AppinfoSettingController::class, 'update'])->name('app-info.update');
+
+                Route::match(['GET', 'POST'], 'seo', [SeoSettingController::class, 'edit'])->name('seo');
+                Route::put('seo', [SeoSettingController::class, 'update'])->name('seo.update');
             }
         );
 
