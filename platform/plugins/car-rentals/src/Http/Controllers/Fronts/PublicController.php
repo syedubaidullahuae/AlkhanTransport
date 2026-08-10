@@ -57,7 +57,20 @@ class PublicController extends BaseController
 {
     public function getCars(Request $request)
     {
-        SeoHelper::setTitle(__('Cars'));
+        $page = (int) request()->get('page', 1);
+
+        SeoHelper::setTitle(
+            $page > 1
+                ? "Fleet - Page {$page} | Al Khan Transport"
+                : "Fleet | Al Khan Transport"
+        );
+        if ($page > 1) {
+            SeoHelper::setDescription(
+                SeoHelper::getDescription() . 'Fleet - Page ' . $page
+            );
+        }
+       
+        
 
         Theme::breadcrumb()
             ->add(__('Home'), route('public.index'))
@@ -106,6 +119,7 @@ class PublicController extends BaseController
 
     public function getCar(string $slug)
     {
+        
         $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Car::class));
 
         abort_unless($slug, 404);

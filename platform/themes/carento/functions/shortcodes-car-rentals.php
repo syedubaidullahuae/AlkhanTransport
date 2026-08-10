@@ -242,12 +242,44 @@ app()->booted(function (): void {
             __('Car Services'),
             __('List of Car Services'),
             function (ShortcodeCompiler $shortcode): ?string {
-                $services = Service::query()
-                    ->wherePublished()
-                    ->latest()
-                    ->wherePublished()
-                    ->limit($shortcode->limit ?: 6)
-                    ->get();
+
+                $contentType = $shortcode->content_type ?? 'services';
+                $services = collect();
+                $categories = collect();
+
+                if ($shortcode->content_type === 'services' || $shortcode->content_type === 'both' || $shortcode->content_type !=='') {
+
+                    $query = Service::query()
+                        ->wherePublished()
+                        ->orderBy('id', $shortcode->order_by === 'asc' ? 'asc' : 'desc');
+
+                    $services = $query
+                        ->limit($shortcode->limit ?: 6)
+                        ->get();
+                }
+
+                if ($shortcode->content_type === 'categories' || $shortcode->content_type === 'both') {
+
+                    $categories = CarCategory::query()
+                        ->where('status', 'published')
+                        ->get()
+                        ->map(function ($category) {
+                            $category->url = str_replace(
+                                'car-categories/',
+                                'rental/',
+                                $category->url
+                            );
+                            return $category;
+                        });
+                }
+
+                // Merge only when both
+                $services = ($shortcode->content_type === 'both')
+                    ? $services->concat($categories)
+                    : ($shortcode->content_type === 'services' ? $services : $categories);
+                //$services = $services->concat($categories);
+
+                
 
                 return Theme::partial('shortcodes.car-services.index', compact('shortcode', 'services'));
             }
@@ -256,6 +288,25 @@ app()->booted(function (): void {
         Shortcode::setAdminConfig('car-services', function (array $attributes): ShortcodeForm {
             return ShortcodeForm::createFromArray($attributes)
                 ->withLazyLoading()
+                ->add(
+                        'style',
+                        UiSelectorField::class,
+                        UiSelectorFieldOption::make()
+                            ->choices(
+                                collect(range(1, 3))
+                                    ->mapWithKeys(fn ($number) => [
+                                        ("style-$number") => [
+                                            'label' => __('Style :number', ['number' => $number]),
+                                            'image' => Theme::asset()->url(
+                                                "images/shortcodes/services/style-$number.png"
+                                            ),
+                                        ],
+                                    ])
+                                    ->all()
+                            )
+                            ->selected(Arr::get($attributes, 'style', 'style-1'))
+                            ->numberItemsPerRow(3)
+                    )
                 ->add(
                     'title',
                     TextField::class,
@@ -270,7 +321,30 @@ app()->booted(function (): void {
                         ->label(__('Limit'))
                         ->helperText(__('Number of items to display'))
                         ->defaultValue(10),
-                );
+                )
+                ->add(
+                        'order_by',
+                        SelectField::class,
+                        SelectFieldOption::make()
+                            ->label(__('Order By'))
+                            ->choices([
+                                'asc' => __('Ascending'),
+                                'desc' => __('Descending'),
+                            ])
+                            ->helperText(__('When enabled, filter box will show.'))
+                    )
+                ->add(
+                        'content_type',
+                        SelectField::class,
+                        SelectFieldOption::make()
+                            ->label(__('Content Type'))
+                            ->choices([
+                                'services' => __('Services Only'),
+                                'categories' => __('Categories Only'),
+                                'both' => __('Both'),
+                            ])
+                           ->helperText(__('Choose what data should be displayed.'))
+                    );
         });
 
         Shortcode::register(

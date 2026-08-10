@@ -100,6 +100,7 @@
                         </div>
                     </div>
                     <div class="item-sort border-1">
+                        
                         @include(Theme::getThemeNamespace('views.car-rentals.car-list.partials.sort-by-dropdown'))
                     </div>
                 </div>
@@ -108,6 +109,7 @@
     </div>
     <div class="box-grid-hotels wow fadeIn car-items">
         <div class="row position-relative">
+            
             @include(Theme::getThemeNamespace('views.car-rentals.car-list.partials.loading-ajax'))
 
             @forelse($cars as $car)

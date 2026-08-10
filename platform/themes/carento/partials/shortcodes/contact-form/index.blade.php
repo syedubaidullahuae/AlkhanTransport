@@ -7,7 +7,7 @@
         <div class="row">
             <div @class(['mb-30', 'col-lg-6' => $isShowMap, 'col-12' => ! $isShowMap])>
                 @if ($title = $shortcode->title)
-                    <h2 class="shortcode-title mb-25">{!! BaseHelper::clean($title) !!}</h2>
+                    <h1 class="shortcode-title mb-25">{!! BaseHelper::clean($title) !!}</h1>
                 @endif
                 <div class="form-contact">
                     {!! $form

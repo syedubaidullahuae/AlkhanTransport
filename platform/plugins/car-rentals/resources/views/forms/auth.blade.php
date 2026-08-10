@@ -24,7 +24,7 @@
                             @endif
                             <div>
                                 @if ($heading)
-                                    <h3 class="fs-4 mb-1">{{ $heading }}</h3>
+                                    <h1 class="fs-4 mb-1">{{ $heading }}</h1>
                                 @endif
                                 @if ($description)
                                     <p class="text-muted">{{ $description }}</p>

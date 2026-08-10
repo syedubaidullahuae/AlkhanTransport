@@ -53,6 +53,11 @@ class CarCategory extends BaseModel implements HasTreeCategoryContract
         });
     }
 
+    public function getUrlAttribute()
+    {
+        return url('rental/' . $this->slug);
+    }
+
     public function cars(): BelongsToMany
     {
         return $this->belongsToMany(Car::class, 'cr_cars_categories', 'cr_car_category_id', 'cr_car_id');
@@ -161,4 +166,6 @@ class CarCategory extends BaseModel implements HasTreeCategoryContract
             ->wherePublished()
             ->with(['slugable', 'activeChildren']);
     }
+
+    
 }

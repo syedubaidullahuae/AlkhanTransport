@@ -184,7 +184,10 @@ class SlugHelper
 
     public function getPrefix(string $model, string $default = '', bool $translate = true): ?string
     {
+        
         $prefix = setting($this->getPermalinkSettingKey($model));
+
+        dd($prefix);
 
         if ($prefix === null) {
             $this->dispatchRegistering();
@@ -243,6 +246,7 @@ class SlugHelper
 
     public function getPermalinkSettingKey(string $model): string
     {
+       
         return $this->getSettingKey('permalink-' . Str::slug(str_replace('\\', '_', $model)));
     }
 

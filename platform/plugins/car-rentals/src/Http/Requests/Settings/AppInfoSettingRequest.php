@@ -14,6 +14,8 @@ class AppInfoSettingRequest extends Request
             'app_name' => ['required', 'string', 'max:255'],
             'app_email' => ['required', 'email', 'max:255'],
             'app_phone' => ['nullable', 'string', 'regex:/^[\+]?[0-9]{10,15}$/'],
+            'address' => ['nullable', 'string'],
+            'hours' => ['nullable', 'string'],
         ];
     }
 }

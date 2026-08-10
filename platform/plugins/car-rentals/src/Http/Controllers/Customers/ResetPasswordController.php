@@ -26,6 +26,7 @@ class ResetPasswordController extends BaseController
     public function showResetForm(Request $request, $token = null)
     {
         SeoHelper::setTitle(__('Reset Password'));
+        SeoHelper::setRobots('noindex,follow');
 
         Theme::breadcrumb()
             ->add(__('Reset Password'), route('customer.password.reset'));

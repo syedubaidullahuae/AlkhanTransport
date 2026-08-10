@@ -1,4 +1,20 @@
 @use(Theme\Carento\Support\ThemeHelper)
+<style>
+
+
+     .content-detail-post h1 {
+            font-size: 32px !important;
+
+        }
+
+        .content-detail-post h2 {
+            font-size: 24px !important;
+        }
+
+        .content-detail-post h3 {
+            font-size: 20px !important;
+        }
+</style>
 
 @php
     Theme::set('breadcrumbs', false);
@@ -90,7 +106,9 @@
                                     @endif
 
                                     <div class="content-detail-post">
-                                        {!! BaseHelper::clean($post->content) !!}
+                                        {!! BaseHelper::clean(
+                                            str_replace('[company_name]', setting('car_rentals_app_name'), $post->content)
+                                        ) !!}
                                     </div>
                                     <div class="footer-post-tags mb-50">
                                         @if ($tags = $post->tags)

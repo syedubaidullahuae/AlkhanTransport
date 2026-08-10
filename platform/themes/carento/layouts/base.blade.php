@@ -339,6 +339,35 @@
             });
 
         });
+
+
+        document.getElementById('open-gallery').addEventListener('click', function () {
+            const images = JSON.parse(this.dataset.images);
+
+            // Create temporary anchors
+            const container = document.createElement('div');
+
+            images.forEach(src => {
+                const a = document.createElement('a');
+                a.href = src;
+                a.className = 'lightbox-temp';
+                container.appendChild(a);
+            });
+
+            document.body.appendChild(container);
+
+            new Tobii({
+                selector: '.lightbox-temp'
+            });
+
+            container.querySelector('a').click();
+        });
+
+
+        $(document).on('click', '.open-gallery', function () {
+            var group = $(this).data('group');
+            $('.lightbox[data-group="' + group + '"]').first().trigger('click');
+        });
     </script>
 </body>
 

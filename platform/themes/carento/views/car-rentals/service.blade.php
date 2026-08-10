@@ -45,8 +45,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
-                        {!! str_replace('[company_name]', setting('car_rentals_app_name'), $service->content) !!}
-                         {!! $service->content !!}
+                         {!! BaseHelper::clean(
+                            str_replace('[company_name]', setting('car_rentals_app_name'), $service->content)
+                        ) !!}
                     </div>
                     <div class="col-lg-4">
                         <div class="booking-sidebar sticky-top">

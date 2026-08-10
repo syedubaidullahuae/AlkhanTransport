@@ -71,7 +71,7 @@
                     @endforeach
                 </div>
                 @if ($pageTitle = Theme::get('pageTitle'))
-                    <h3 class="my-3 neutral-1000">{!! BaseHelper::clean($pageTitle) !!}</h3>
+                    <h1 class="my-3 neutral-1000">{!! BaseHelper::clean($pageTitle) !!}</h1>
                 @endif
             </div>
         </div>

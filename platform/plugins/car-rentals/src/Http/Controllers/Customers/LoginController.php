@@ -25,6 +25,9 @@ class LoginController extends BaseController
     public function showLoginForm()
     {
         SeoHelper::setTitle(__('Login'));
+        SeoHelper::setDescription(
+                SeoHelper::getDescription() . ' -  Login ' 
+            );
 
         if (! session()->has('url.intended')) {
             session(['url.intended' => url()->previous()]);
