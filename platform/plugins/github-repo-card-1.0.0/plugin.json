@@ -1,0 +1,11 @@
+{
+    "id": "dheer/github-repo-card",
+    "name": "GitHub Repo Card",
+    "namespace": "Zelio\\GithubRepo\\",
+    "provider": "Zelio\\GithubRepo\\Providers\\GithubRepoServiceProvider",
+    "author": "DheerGupta35959",
+    "url": "https://github.com/DheerGupta35959/github-repo-card",
+    "version": "1.0.0",
+    "description": "Embed GitHub repository cards in your content — just like Medium. Usage: [github-repo url=\"https://github.com/owner/repo\"]",
+    "minimum_core_version": "7.3.0"
+}

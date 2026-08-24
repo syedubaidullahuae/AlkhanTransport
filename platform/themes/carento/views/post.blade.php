@@ -34,7 +34,9 @@
                 @if ($category = $post->firstCategory)
                     <a href="{{ $category->url }}"><span class="btn btn-label-tag background-3">{{ $category->name }}</span></a>
                 @endif
-                <h2 class="text-white py-3  w-75 truncate-3-custom" title="{{ $post->name }}">{{ $post->name }}</h2>
+                <h2 class="text-white py-3  w-75 truncate-3-custom" title="{{ $post->name }}">
+                    {!! BaseHelper::clean(str_replace('[company_name]', setting('car_rentals_app_name'), $post->name )) !!}
+                </h2>
                 <div class="card-meta-user">
                     @if (ThemeHelper::isShowPostMeta('detail', 'author', true) && ($author = $post->author))
                         <div class="box-author-small">
@@ -125,6 +127,7 @@
                                                     <p class="text-lg-bold neutral-1000 d-inline-block mr-10 mb-0">{{ __('Share this:') }}</p>
                                                     <div class="box-socials d-inline-block d-flex gap-2">
                                                         @foreach($socials as $social)
+                                                            
                                                             @php
                                                                 $name = Arr::get($social, 'name');
                                                                 $backgroundColor = Arr::get($social, 'background_color');

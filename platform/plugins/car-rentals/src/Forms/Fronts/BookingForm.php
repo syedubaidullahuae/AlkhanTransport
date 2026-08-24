@@ -174,7 +174,7 @@ class BookingForm extends FormFront
                 PhoneNumberFieldOption::make()
                     ->label(__('Phone (optional)'))
                     ->placeholder(__('Phone number'))
-                    ->withCountryCodeSelection()
+                    //->withCountryCodeSelection()
                     ->addAttribute('autocomplete', 'tel')
             )
 

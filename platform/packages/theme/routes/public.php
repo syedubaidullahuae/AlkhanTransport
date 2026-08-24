@@ -62,7 +62,7 @@ Theme::registerRoutes(function (): void {
                     }
 
                     return $sitemap->render('xml');
-            });
+            })->name('public.sitemap');
 
             Route::get('services.xml', function () {
 

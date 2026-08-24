@@ -232,6 +232,7 @@
 
     {!! Theme::footer() !!}
 
+
     <script>
         $(document).ready(function() {
 
@@ -369,6 +370,8 @@
             $('.lightbox[data-group="' + group + '"]').first().trigger('click');
         });
     </script>
+
+    @stack('scripts')
 </body>
 
 </html>
