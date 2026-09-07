@@ -174,7 +174,7 @@ class ThemeSupport
 
     public static function registerPreloader(): void
     {
-        add_filter(THEME_FRONT_HEADER, function (?string $html): string {
+        add_filter(THEME_FRONT_BODY, function (?string $html): string {
             if (theme_option('preloader_enabled', 'no') != 'yes') {
                 return $html;
             }

@@ -119,7 +119,8 @@ class PublicController extends BaseController
 
     public function getCar(string $slug)
     {
-        
+
+
         $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Car::class));
 
         abort_unless($slug, 404);
@@ -166,7 +167,7 @@ class PublicController extends BaseController
 
         Theme::breadcrumb()
             ->add(__('Home'), route('public.index'))
-            ->add(__('Cars'), route('public.cars'))
+            ->add("Fleets", route('public.cars'))
             ->add($car->name, $car->url);
 
         if (function_exists('admin_bar')) {

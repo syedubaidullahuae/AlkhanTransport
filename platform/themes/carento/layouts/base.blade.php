@@ -12,6 +12,12 @@
 
     {!! Theme::header() !!}
     <style>
+        .post-content a{
+            color: var(--bs-brand-2) !important;
+        }
+        .post-content a:hover{
+            text-decoration: underline !important;
+        }
         .post-content h1 {
             font-size: 32px !important;
 
