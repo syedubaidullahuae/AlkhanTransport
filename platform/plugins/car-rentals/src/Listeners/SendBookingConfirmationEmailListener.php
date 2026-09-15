@@ -30,7 +30,9 @@ class SendBookingConfirmationEmailListener implements ShouldQueue
         ]);
 
         $mailer->sendUsingTemplate('booking-confirm', $booking->customer_email);
-        $mailer->sendUsingTemplate('booking-notice-to-admin');
+        $mailer->sendUsingTemplate('booking-notice-to-admin', null, [
+            'replyTo' => $booking->customer_email,
+        ]);
 
         if ($booking->car->vendor_id) {
             $vendor = Customer::query()->where('id', $booking->car->vendor_id)

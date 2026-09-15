@@ -40,6 +40,7 @@ use Botble\Payment\Enums\PaymentMethodEnum;
 use Botble\Payment\Services\Gateways\BankTransferPaymentService;
 use Botble\Payment\Services\Gateways\CodPaymentService;
 use Botble\Payment\Supports\PaymentHelper;
+use Botble\Base\Facades\MetaBox;
 use Botble\SeoHelper\Facades\SeoHelper;
 use Botble\SeoHelper\SeoOpenGraph;
 use Botble\Slug\Facades\SlugHelper;
@@ -57,21 +58,22 @@ class PublicController extends BaseController
 {
     public function getCars(Request $request)
     {
-        $page = (int) request()->get('page', 1);
+        $page = (int) request()->get('page', 0);
 
         SeoHelper::setTitle(
-            $page > 1
+            $page >= 1
                 ? "Fleet - Page {$page} | Al Khan Transport"
                 : "Fleet | Al Khan Transport"
         );
-        if ($page > 1) {
+        if ($page >= 1) {
             SeoHelper::setDescription(
-                SeoHelper::getDescription() . 'Fleet - Page ' . $page
+               SeoHelper::getDescription() . 'Fleet - Page ' . $page
             );
+        }else{
+           SeoHelper::setDescription(
+               SeoHelper::getDescription() . 'Fleet '
+            ); 
         }
-       
-        
-
         Theme::breadcrumb()
             ->add(__('Home'), route('public.index'))
             ->add(__('Cars'), route('public.cars'));
@@ -119,8 +121,7 @@ class PublicController extends BaseController
 
     public function getCar(string $slug)
     {
-
-
+        
         $slug = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Car::class));
 
         abort_unless($slug, 404);
@@ -154,20 +155,30 @@ class PublicController extends BaseController
             ->where('status', BaseStatusEnum::PUBLISHED)
             ->paginate(CarRentalsHelper::getCarsPerPage());
 
-        SeoHelper::setTitle($car->name)->setDescription(Str::words($car->description ?? '', 120));
+         $companyName = setting('car_rentals_app_name');
+        $seoMeta = MetaBox::getMetaData($car, 'seo_meta', true);
+        $seoTitle = is_array($seoMeta) ? Arr::get($seoMeta, 'seo_title') : null;
+        $seoDescription = is_array($seoMeta) ? Arr::get($seoMeta, 'seo_description') : null;
+
+        $title = str_replace('[company_name]', $companyName, $seoTitle ?: $car->name);
+        $description = str_replace('[company_name]', $companyName, $seoDescription ?: Str::words($car->description ?? '', 120));
+
+        // Set global SEO meta tags
+        SeoHelper::setTitle($title)->setDescription($description);
+
 
         $meta = new SeoOpenGraph();
 
-        $meta->setDescription($car->description ?? '');
+        $meta->setDescription($description);
         $meta->setUrl($car->url);
-        $meta->setTitle($car->name);
+        $meta->setTitle($title);
         $meta->setType('article');
 
         SeoHelper::setSeoOpenGraph($meta);
 
         Theme::breadcrumb()
             ->add(__('Home'), route('public.index'))
-            ->add("Fleets", route('public.cars'))
+            ->add('Fleets', route('public.cars'))
             ->add($car->name, $car->url);
 
         if (function_exists('admin_bar')) {
