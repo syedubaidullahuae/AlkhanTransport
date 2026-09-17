@@ -58,9 +58,7 @@ Theme::layout('homepage');
                         {!! do_shortcode('[car-list enable_filter="no" default_layout="grid"][/car-list]') !!}
                         {!! apply_filters('ads_render', null, 'car_list_after', ['class' => 'mt-2']) !!}
 
-
-                         {!! BaseHelper::clean(str_replace('[company_name]', setting('car_rentals_app_name'), $category->content)) !!}
-
+                        {!! BaseHelper::clean(str_replace('[company_name]', setting('car_rentals_app_name'), $category->content)) !!}
                     </div>
                     <div class="col-lg-4">
                         <div class="booking-sidebar sticky-top">

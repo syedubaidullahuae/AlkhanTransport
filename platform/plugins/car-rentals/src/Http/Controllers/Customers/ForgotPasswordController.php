@@ -22,6 +22,11 @@ class ForgotPasswordController extends BaseController
     public function showLinkRequestForm()
     {
         SeoHelper::setTitle(__('Forgot Password'));
+        SeoHelper::meta()->addMeta('robots', 'noindex,follow');
+        
+        SeoHelper::setDescription(
+                SeoHelper::getDescription() . ' -  Forgot Password ' 
+        );
 
         Theme::breadcrumb()
             ->add(__('Login'), route('customer.password.reset'));

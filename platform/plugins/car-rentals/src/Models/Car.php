@@ -192,7 +192,7 @@ class Car extends BaseModel
                 return implode(', ', array_filter([
                     $this->address,
                     $this->city->name . ($this->city->zip_code ? ' ' . $this->city->zip_code : null),
-                    $this->state->name,
+                    //$this->state->name,
                     $this->country->name,
                 ]));
             }

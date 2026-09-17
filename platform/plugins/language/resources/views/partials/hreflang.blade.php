@@ -1,10 +1,8 @@
+
 @foreach ($hreflangUrls as $hreflangCode => $url)
-<link href="{{ $url }}" hreflang="{{ $hreflangCode }}" rel="alternate" >
+    <link href="{{ $url }}" hreflang="{{ $hreflangCode }}" rel="alternate"/>
 @endforeach
 
-<link href="{{ rtrim(Language::getLocalizedURL(Language::getDefaultLocale(), url()->current(), [], false), '/') }}"
- hreflang="x-default"
-    rel="alternate"
-/>
+<link href="{{ rtrim(Language::getLocalizedURL(Language::getDefaultLocale(), url()->current(), [], false), '/') }}"  hreflang="x-default" rel="alternate"/>
 
 

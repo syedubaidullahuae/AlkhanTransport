@@ -20,7 +20,9 @@
                             <a class="text-xl-bold neutral-1000" href="{{ route('car-rentals.category', $category->slug) }}">{{ $category->name }}</a>
 
                             @if ($description = $category->description)
-                            <p class="text-md-medium neutral-500 mt-2 truncate-3-custom">{!! BaseHelper::clean($description) !!}</p>
+                            <p class="text-md-medium neutral-500 mt-2 truncate-3-custom">{!! BaseHelper::clean(
+                                            str_replace('[company_name]', setting('car_rentals_app_name'), $description)
+                                        ) !!}</p>
                             @endif
                         </div>
                         <div class="card-program">

@@ -52,31 +52,21 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
         
                 <div class="item-line-booking border-bottom-0 pb-0">
                     <strong class="text-md-bold neutral-1000">Pick-Up</strong>
-                    <div class="input-calendar">
+                    <div class="input-group mt-2">
                         <input class="form-control calendar-date" type="text" name="rental_start_date" value="{{ $startDate }}" aria-invalid="false">
-                        <svg class="icon icon-xs svg-icon-ti-ti-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"></path>
-                            <path d="M16 3v4"></path>
-                            <path d="M8 3v4"></path>
-                            <path d="M4 11h16"></path>
-                            <path d="M11 15h1"></path>
-                            <path d="M12 15v3"></path>
-                        </svg>
+                        <span class="input-group-text">
+                            <i class="bi bi-calendar3"></i>
+                        </span>
                     </div>
                 </div>
 
                 <div class="item-line-booking border-bottom-0 pb-0">
                     <strong class="text-md-bold neutral-1000">Drop-Off</strong>
-                    <div class="input-calendar">
+                    <div class="input-group mt-2">
                         <input class="form-control calendar-date" type="text" name="rental_end_date"  value="{{ $endDate }}" aria-invalid="false">
-                        <svg class="icon icon-xs svg-icon-ti-ti-calendar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"></path>
-                            <path d="M16 3v4"></path>
-                            <path d="M8 3v4"></path>
-                            <path d="M4 11h16"></path>
-                            <path d="M11 15h1"></path>
-                            <path d="M12 15v3"></path>
-                        </svg>
+                        <span class="input-group-text">
+                            <i class="bi bi-calendar3"></i>
+                        </span>
                     </div>
                 </div>
 

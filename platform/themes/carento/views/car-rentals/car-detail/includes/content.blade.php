@@ -10,7 +10,7 @@
         @if($content = $car->content)
             <div class="collapse show" id="collapseOverview">
                 <div class="card card-body ck-content post-content">
-                     {!! BaseHelper::clean(
+                    {!! BaseHelper::clean(
                             str_replace('[company_name]', setting('car_rentals_app_name'), $content)
                         ) !!}
                 </div>

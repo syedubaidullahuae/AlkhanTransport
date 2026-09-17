@@ -49,9 +49,6 @@ Theme::registerRoutes(function (): void {
                             if ($page->slug === 'fleet') {
                                 $url = url('fleet.xml');
                             }
-                             if ($page->slug === 'events') {
-                                $url = url('events.xml');
-                            }
 
                         $sitemap->add(
                         $url,

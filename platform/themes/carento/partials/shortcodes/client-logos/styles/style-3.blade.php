@@ -20,7 +20,7 @@
     <div class="container filter-brands-by-alphabet">
         <div class="alphabet-grid mb-3 text-center">
             @if ($title)
-                <h2 class="heading-3 mb-3 shortcode-title wow fadeInUp">{!! BaseHelper::clean($title) !!}</h2>
+                <h1 class="heading-3 mb-3 shortcode-title wow fadeInUp">{!! BaseHelper::clean($title) !!}</h1>
             @endif
 
             <div class="d-flex flex-wrap justify-content-center">

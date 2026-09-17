@@ -45,9 +45,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
-                         {!! BaseHelper::clean(
+                        
+                        {!! BaseHelper::clean(
                             str_replace('[company_name]', setting('car_rentals_app_name'), $service->content)
                         ) !!}
+                       
                     </div>
                     <div class="col-lg-4">
                         <div class="booking-sidebar sticky-top">
@@ -61,33 +63,3 @@
         </div>
     </div>
 </section>
-
-
-@push('scripts')
-@php
-    Theme::set('breadcrumbs', false);
-    Theme::layout('full-width');
-
-    $schema = [
-        '@context' => 'https://schema.org',
-        '@type' => 'Service',
-        'name' => $service->name ?? 'Car Rental Services',
-        'description' => $service->description ?? 'Professional car rental services with easy online booking.',
-        'url' => url()->current(),
-        'provider' => [
-            '@type' => 'Organization',
-            'name' => theme_option('site_name'),
-            'url' => url('/'),
-        ],
-        'areaServed' => [
-            '@type' => 'Country',
-            'name' => 'United Arab Emirates',
-        ],
-    ];
-@endphp
-
-<script type="application/ld+json">
-{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
-</script>
-
-@endpush

@@ -39,7 +39,7 @@ class RegisterForm extends AuthForm
     public function setup(): void
     {
         parent::setup();
-        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.css', version: get_cms_version());
+        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.min.css', version: get_cms_version());
         Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
 
         $this

@@ -36,7 +36,7 @@ class AppinfoSettingController extends SettingController
 
 
         $data['description_1'] = $request->input('address');
-        $data['description_2'] = $request->input('hour');
+        $data['description_2'] = $request->input('hours');
 
         $widget->data = $data;
         $widget->save();

@@ -15,7 +15,7 @@ class CheckCarAvailabilityForm extends FormFront
 {
     public function setup(): void
     {
-        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.css', version: get_cms_version());
+        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.min.css', version: get_cms_version());
 
         $this
             ->contentOnly()

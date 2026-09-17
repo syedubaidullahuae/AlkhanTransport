@@ -17,6 +17,7 @@ class GeneralSettingRequest extends Request
             'enable_post_approval' => $onOffRule,
             'enabled_car_rental' => $onOffRule,
             'enabled_car_sale' => $onOffRule,
+            'enabled_car_price' => $onOffRule,
             'booking_number_prefix' => ['nullable', 'string'],
             'booking_number_suffix' => ['nullable', 'string'],
             'rental_commission_fee' => ['required', 'numeric', 'min:0', 'max:100'],

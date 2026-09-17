@@ -3,7 +3,7 @@
         <div class="row align-items-end">
             @if ($title = $shortcode->title)
             <div class="col-lg-7">
-                <h2 class="heading-3 shortcode-title">{!! BaseHelper::clean($title) !!}</h2>
+                <h1 class="heading-3 shortcode-title">{!! BaseHelper::clean($title) !!}</h1>
             </div>
             @endif
 

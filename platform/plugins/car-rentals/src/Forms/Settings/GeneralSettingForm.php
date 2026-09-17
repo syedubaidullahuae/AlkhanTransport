@@ -122,6 +122,14 @@ class GeneralSettingForm extends SettingForm
                     ->helperText(trans('plugins/car-rentals::settings.general.forms.enabled_car_rental_helper'))
             )
             ->add(
+                'enabled_car_price',
+                OnOffCheckboxField::class,
+                OnOffFieldOption::make()
+                    ->value(get_car_rentals_setting('enabled_car_price', true))
+                    ->label("Enable Car Price")
+                    ->helperText("When Enable show the price")
+            )
+            ->add(
                 'enabled_car_sale',
                 OnOffCheckboxField::class,
                 OnOffFieldOption::make()

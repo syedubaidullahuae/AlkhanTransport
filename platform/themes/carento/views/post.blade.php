@@ -108,6 +108,7 @@
                                     @endif
 
                                     <div class="content-detail-post">
+                                     
                                         {!! BaseHelper::clean(
                                             str_replace('[company_name]', setting('car_rentals_app_name'), $post->content)
                                         ) !!}
@@ -127,7 +128,6 @@
                                                     <p class="text-lg-bold neutral-1000 d-inline-block mr-10 mb-0">{{ __('Share this:') }}</p>
                                                     <div class="box-socials d-inline-block d-flex gap-2">
                                                         @foreach($socials as $social)
-                                                            
                                                             @php
                                                                 $name = Arr::get($social, 'name');
                                                                 $backgroundColor = Arr::get($social, 'background_color');

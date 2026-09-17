@@ -60,10 +60,7 @@
                                     </div>
                                     <div class="card-info">
                                         <a class="text-md-bold neutral-1000 truncate-2-custom" title="{{ $post->name }}" href="{{ $post->url }}">
-                                            
-
-                                             {!! BaseHelper::clean(str_replace('[company_name]', setting('car_rentals_app_name'), $post->name )) !!}
-                                        
+                                            {!! BaseHelper::clean(str_replace('[company_name]', setting('car_rentals_app_name'), $post->name )) !!}
                                         </a>
 
                                         @if (ThemeHelper::isShowPostMeta('list', 'published_date', true))

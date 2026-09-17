@@ -33,7 +33,11 @@ class RegisterController extends BaseController
     {
         abort_unless(CarRentalsHelper::isEnabledCustomerRegistration(), 404);
 
-        SeoHelper::setTitle(__('Register'));
+        SeoHelper::setTitle(__('Register to Your Account | Al Khan Transport'));
+        
+        SeoHelper::setDescription(
+                SeoHelper::getDescription() . ' -  Register ' 
+            );
 
         Theme::breadcrumb()->add(__('Register'), route('customer.register'));
 
@@ -54,8 +58,8 @@ class RegisterController extends BaseController
         Theme::asset()
             ->container('footer')
             
-            ->add('js-validation', 'vendor/core/core/js-validation/js/js-validation.js', ['jquery'], version: '1.0.1')
-            ->add('register-js', 'vendor/core/plugins/car-rentals/js/register.js', ['jquery', 'js-validation'], version: '1.0.1');
+            ->add('js-validation', 'vendor/core/core/js-validation/js/js-validation.js', ['jquery'], version: '1.0.1');
+            //->add('register-js', 'vendor/core/plugins/car-rentals/js/register.js', ['jquery', 'js-validation'], version: '1.0.1');
             
             
        

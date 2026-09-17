@@ -15,7 +15,7 @@
                     $id = 'faq-item-' . $faq->getKey();
                 @endphp
 
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="accordion">
                         <div class="mb-2 card border">
                             <div class="px-0 card-header border-0 bg-gradient-1 background-card">

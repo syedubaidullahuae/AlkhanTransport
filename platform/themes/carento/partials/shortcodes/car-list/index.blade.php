@@ -15,7 +15,7 @@
                 <div class="row align-items-end">
                     <div class="col-md-9 mb-30 wow fadeInUp">
                         @if($shortcode->title)
-                            <h4 class="title-svg shortcode-title mb-15">{{ BaseHelper::clean($shortcode->title) }}</h4>
+                            <h1 class="title-svg shortcode-title mb-15">{{ BaseHelper::clean($shortcode->title) }}</h1>
                         @endif
                         @if($shortcode->subtitle)
                             <p class="text-lg-medium text-bold shortcode-subtitle">{{ BaseHelper::clean($shortcode->subtitle) }}</p>

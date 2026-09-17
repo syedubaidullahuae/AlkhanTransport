@@ -5,7 +5,9 @@ namespace Botble\Widget\Http\Controllers;
 use Botble\Base\Facades\Assets;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Supports\Breadcrumb;
-
+use Botble\Widget\Events\RenderingWidgetSettings;
+use Botble\Widget\Facades\WidgetGroup;
+use Botble\Widget\Models\Widget;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

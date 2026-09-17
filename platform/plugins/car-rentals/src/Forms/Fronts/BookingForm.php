@@ -31,7 +31,7 @@ class BookingForm extends FormFront
 {
     public function setup(): void
     {
-        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.css', version: get_cms_version());
+        Theme::asset()->add('booking-css', 'vendor/core/plugins/car-rentals/css/front-booking-form.min.css', version: get_cms_version());
         Theme::asset()->container('footer')->add('booking-js', 'vendor/core/plugins/car-rentals/js/front-booking-form.js', version: get_cms_version());
 
         $carId = $this->model['car_id'] ?? null;
@@ -174,7 +174,7 @@ class BookingForm extends FormFront
                 PhoneNumberFieldOption::make()
                     ->label(__('Phone (optional)'))
                     ->placeholder(__('Phone number'))
-                    //->withCountryCodeSelection()
+                   // ->withCountryCodeSelection()
                     ->addAttribute('autocomplete', 'tel')
             )
 
