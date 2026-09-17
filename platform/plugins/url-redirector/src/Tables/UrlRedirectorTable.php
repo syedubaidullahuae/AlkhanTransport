@@ -25,11 +25,13 @@ class UrlRedirectorTable extends TableAbstract
                 IdColumn::make(),
                 LinkableColumn::make('original')
                     ->label(trans('plugins/url-redirector::url-redirector.original'))
+                    ->urlUsing(fn (LinkableColumn $column) => $column->getOriginalValue())
                     ->externalLink()
                     ->limit(30)
                     ->copyable(),
                 LinkableColumn::make('target')
                     ->label(trans('plugins/url-redirector::url-redirector.target'))
+                    ->urlUsing(fn (LinkableColumn $column) => $column->getOriginalValue())
                     ->externalLink()
                     ->limit(30)
                     ->copyable(),
