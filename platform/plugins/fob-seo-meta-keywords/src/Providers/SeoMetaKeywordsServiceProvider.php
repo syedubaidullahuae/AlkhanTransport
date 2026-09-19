@@ -50,11 +50,6 @@ class SeoMetaKeywordsServiceProvider extends ServiceProvider
 
                 if (! empty($meta['seo_keywords'])) {
                     SeoHelper::meta()->addMeta('keywords', $meta['seo_keywords']);
-                } else {
-                    $globalKeywords = theme_option('seo_keywords');
-                    if ($globalKeywords) {
-                        SeoHelper::meta()->addMeta('keywords', $globalKeywords);
-                    }
                 }
             }, 57, 2);
 
@@ -79,13 +74,12 @@ class SeoMetaKeywordsServiceProvider extends ServiceProvider
             });
 
             View::composer(['packages/theme::partials.header', '*::partials.header'], function (): void {
-                $existingMeta = SeoHelper::meta()->render();
+                if (! request()->routeIs('public.index')) {
+                    return;
+                }
 
-                if (! str_contains($existingMeta, 'name="keywords"')) {
-                    $globalKeywords = theme_option('seo_keywords');
-                    if ($globalKeywords) {
-                        SeoHelper::meta()->addMeta('keywords', $globalKeywords);
-                    }
+                if ($homepageKeywords = theme_option('seo_keywords')) {
+                    SeoHelper::meta()->addMeta('keywords', $homepageKeywords);
                 }
             });
         });

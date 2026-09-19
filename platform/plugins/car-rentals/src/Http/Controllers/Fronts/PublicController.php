@@ -155,7 +155,9 @@ class PublicController extends BaseController
             ->where('status', BaseStatusEnum::PUBLISHED)
             ->paginate(CarRentalsHelper::getCarsPerPage());
 
-         $companyName = setting('car_rentals_app_name');
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, CAR_RENTALS_MODULE_SCREEN_NAME, $car);
+
+        $companyName = setting('car_rentals_app_name');
         $seoMeta = MetaBox::getMetaData($car, 'seo_meta', true);
         $seoTitle = is_array($seoMeta) ? Arr::get($seoMeta, 'seo_title') : null;
         $seoDescription = is_array($seoMeta) ? Arr::get($seoMeta, 'seo_description') : null;
@@ -198,13 +200,24 @@ class PublicController extends BaseController
 
         abort_if($service->status->getValue() !== BaseStatusEnum::PUBLISHED, 404);
 
-        SeoHelper::setTitle($service->name)->setDescription(Str::words($service->description ?? '', 120));
+         $companyName = setting('car_rentals_app_name');
+        $seoMeta = MetaBox::getMetaData($service, 'seo_meta', true);
+        $seoTitle = is_array($seoMeta) ? Arr::get($seoMeta, 'seo_title') : null;
+        $seoDescription = is_array($seoMeta) ? Arr::get($seoMeta, 'seo_description') : null;
+        
+
+        $title = str_replace('[company_name]', $companyName, $seoTitle ?: $service->name);
+        $description = str_replace('[company_name]', $companyName, $seoDescription ?: Str::words($service->description ?? '', 120));
+
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, CAR_RENTALS_MODULE_SCREEN_NAME, $service);
+
+        SeoHelper::setTitle($title)->setDescription($description);
 
         $meta = new SeoOpenGraph();
 
-        $meta->setDescription($service->description ?? '');
+        $meta->setDescription($description);
         $meta->setUrl($service->url);
-        $meta->setTitle($service->name);
+        $meta->setTitle($title);
         $meta->setType('article');
 
         SeoHelper::setSeoOpenGraph($meta);
@@ -1324,6 +1337,8 @@ class PublicController extends BaseController
         // ✅ SEO
         SeoHelper::setTitle($category->name);
         SeoHelper::setDescription("Browse cars in " . $category->name);
+
+        do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, CAR_RENTALS_MODULE_SCREEN_NAME, $category);
 
         // ✅ Breadcrumb (recommended)
         Theme::breadcrumb()
