@@ -143,7 +143,7 @@ class BookingController extends BaseApiController
 
             $booking->update($updateData);
 
-            event(new BookingStatusChanged($booking, $oldStatus, $newStatus));
+            BookingStatusChanged::dispatch($oldStatus->getValue(), $booking);
 
             $booking->load(['car.car', 'services', 'currency', 'payment', 'customer']);
 

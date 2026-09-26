@@ -5,6 +5,7 @@ namespace Botble\CarRentals\Http\Controllers\Vendor;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\CarRentals\Enums\BookingStatusEnum;
+use Botble\CarRentals\Events\BookingStatusChanged;
 use Botble\CarRentals\Models\Booking;
 use Botble\CarRentals\Tables\Vendor\BookingTable;
 use Illuminate\Http\Response;
@@ -80,7 +81,11 @@ class BookingController extends BaseController
                 ->setMessage(trans('plugins/car-rentals::booking.cannot_cancel_booking'));
         }
 
+        $oldStatus = $booking->status->getValue();
+
         $booking->update(['status' => BookingStatusEnum::CANCELLED]);
+
+        BookingStatusChanged::dispatch($oldStatus, $booking);
 
         return $this
             ->httpResponse()

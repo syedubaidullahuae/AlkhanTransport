@@ -5,6 +5,7 @@ namespace Botble\CarRentals\Http\Controllers\API;
 use Botble\Api\Http\Controllers\BaseApiController;
 use Botble\CarRentals\Enums\BookingStatusEnum;
 use Botble\CarRentals\Events\BookingCreated;
+use Botble\CarRentals\Events\BookingStatusChanged;
 use Botble\CarRentals\Facades\CarRentalsHelper;
 use Botble\CarRentals\Http\Resources\BookingDetailResource;
 use Botble\CarRentals\Http\Resources\BookingResource;
@@ -354,10 +355,14 @@ class BookingController extends BaseApiController
         ]);
 
         try {
+            $oldStatus = $booking->status->getValue();
+
             $booking->update([
                 'status' => BookingStatusEnum::CANCELLED,
                 'note' => $booking->note . "\n\nCancellation reason: " . $request->input('reason', 'No reason provided'),
             ]);
+
+            BookingStatusChanged::dispatch($oldStatus, $booking);
 
             return $this
                 ->httpResponse()

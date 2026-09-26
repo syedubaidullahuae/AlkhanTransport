@@ -564,6 +564,8 @@ return [
         'booking_notice_vendor_message' => 'Great news! You have received a new booking for your car rental.',
 
         // Booking status changed email
+        'booking_cancelled' => 'Booking Cancelled',
+        'booking_cancelled_message' => 'Your booking has been cancelled. Please contact us if you have any questions.',
         'booking_status_updated' => 'Booking Status Updated',
         'hello_thanks_for_booking' => 'Hello, Thanks for booking rooms from :site_title:',
         'booking_status_change_message' => 'We hope this message finds you well. We wanted to inform you that the status of your booking has been updated.',
