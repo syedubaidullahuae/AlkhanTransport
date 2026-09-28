@@ -699,6 +699,8 @@ class PublicController extends BaseController
             'pickup_city_id' => null,  // These fields will be customer-selected during booking
             'return_city_id' => null,
             'no_of_months' => $request->no_of_months,
+            'rent_type' => $request->rent_type,
+            'vehicle_type_id' => $request->input('vehical_type'),
             'currency_id' => $request->input('currency_id', strtoupper(get_application_currency()->id)),
         ]);
 

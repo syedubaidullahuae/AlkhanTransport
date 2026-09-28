@@ -25,6 +25,8 @@ class BookingCar extends BaseModel
         'pickup_city_id',
         'return_city_id',
         'no_of_months',
+        'rent_type',
+        'vehicle_type_id',
     ];
 
     protected $casts = [
@@ -45,6 +47,11 @@ class BookingCar extends BaseModel
     public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class, 'car_id')->withDefault();
+    }
+
+    public function vehicleType(): BelongsTo
+    {
+        return $this->belongsTo(CarType::class, 'vehicle_type_id')->withDefault();
     }
 
     public function pickupCity(): BelongsTo

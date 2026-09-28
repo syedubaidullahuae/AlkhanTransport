@@ -23,7 +23,7 @@
     @endif
 
     @if (is_plugin_active('payment') && $booking->payment->id)
-        <p>
+        <!-- <p>
             <span class="d-inline-block">{{ __('Payment method') }}:</span>
             <span class="order-customer-info-meta">{{ $booking->payment->payment_channel->label() }}</span>
         </p>
@@ -34,7 +34,7 @@
                 style="text-transform: uppercase"
                 data-bb-target="ecommerce-order-payment-status"
             >{!! BaseHelper::clean($booking->payment->status->toHtml()) !!}</span>
-        </p>
+        </p> -->
 
         @if (setting('payment_bank_transfer_display_bank_info_at_the_checkout_success_page', false) &&
                 ($bankInfo = OrderHelper::getOrderBankInfo($bookings)))
