@@ -573,6 +573,8 @@ return [
         'phone' => 'Phone',
         'email' => 'Email',
         'car_model' => 'Car Model',
+        'field_vehicle_type' => 'Vehicle Type:',
+        'field_rental_duration' => 'Rental Duration:',
         'start_date' => 'Start Date',
         'end_date' => 'End Date',
         'pickup_address' => 'Pickup Address',

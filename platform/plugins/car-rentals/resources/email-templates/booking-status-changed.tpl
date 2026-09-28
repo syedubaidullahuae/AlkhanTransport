@@ -51,9 +51,17 @@
                     <tr>
                         <td class="bb-bb-col">
                             <h4>{{ 'plugins/car-rentals::car-rentals.email_templates.booking_information' | trans }}</h4>
-                            <div>{{ 'plugins/car-rentals::car-rentals.email_templates.car_model' | trans }}: <strong>{{ car_name }}</strong></div>
-                            <div>{{ 'plugins/car-rentals::car-rentals.email_templates.start_date' | trans }}: <strong>{{ rental_start_date }}</strong></div>
-                            <div>{{ 'plugins/car-rentals::car-rentals.email_templates.end_date' | trans }}: <strong>{{ rental_end_date }}</strong></div>
+                            {% if vehicle_type %}
+                                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.field_vehicle_type' | trans }}: <strong>{{ vehicle_type }}</strong></div>
+                            {% elseif car_name %}
+                                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.car_model' | trans }}: <strong>{{ car_name }}</strong></div>
+                            {% endif %}
+                            {% if rental_duration %}
+                                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.field_rental_duration' | trans }}: <strong>{{ rental_duration }}</strong></div>
+                            {% else %}
+                                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.start_date' | trans }}: <strong>{{ rental_start_date }}</strong></div>
+                                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.end_date' | trans }}: <strong>{{ rental_end_date }}</strong></div>
+                            {% endif %}
                         </td>
                     </tr>
                     </tbody>
@@ -62,8 +70,8 @@
         </tr>
         <tr>
             <td class="bb-content bb-pt-0">
-                {% if order_note %}
-                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.note' | trans }}: {{ order_note }}</div>
+                {% if note %}
+                <div>{{ 'plugins/car-rentals::car-rentals.email_templates.note' | trans }}: {{ note }}</div>
                 {% endif %}
             </td>
         </tr>

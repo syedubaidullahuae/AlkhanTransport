@@ -176,6 +176,8 @@ return [
                 'customer_email' => 'Customer email',
                 'payment_method' => 'Payment method',
                 'car_name' => 'Car name',
+                'vehicle_type' => 'Vehicle type',
+                'rental_duration' => 'Rental duration in months',
                 'pickup_address' => 'Pickup address',
                 'return_address' => 'Return address',
                 'rental_start_date' => 'Rental start date',

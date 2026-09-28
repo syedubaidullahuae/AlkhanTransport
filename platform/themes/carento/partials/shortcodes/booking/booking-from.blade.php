@@ -93,7 +93,7 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
                         <div class="col-lg-3 item-line-booking border-bottom-0 pb-0">
                             <strong class="text-sm-medium neutral-1000">Start Date</strong>
                             <div class="input-group mb-2">
-                                <input class="form-control calendar-date" type="text" name="rental_start_date" value="{{ date('Y-m-d') }}" style="height:60px">
+                                <input class="form-control calendar-date" type="text" name="rental_start_date" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" style="height:60px">
                                 <span class="input-group-text">
                                     <i class="bi bi-calendar3"></i>
                                 </span>
@@ -103,7 +103,7 @@ $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($
                         <div class="col-lg-3 item-line-booking border-bottom-0 pb-0">
                             <strong class="text-sm-medium neutral-1000">End Date</strong>
                             <div class="input-group mb-2">
-                                <input class="form-control calendar-date" type="text" name="rental_end_date" value="{{ date('Y-m-d', strtotime('+1 month')) }}" style="height:60px">
+                                <input class="form-control calendar-date" type="text" name="rental_end_date" value="{{ date('Y-m-d', strtotime('+1 month')) }}" min="{{ date('Y-m-d') }}"  style="height:60px">
                                 <span class="input-group-text">
                                     <i class="bi bi-calendar3"></i>
                                 </span>

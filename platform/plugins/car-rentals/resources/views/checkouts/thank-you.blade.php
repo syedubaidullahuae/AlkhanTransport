@@ -111,12 +111,12 @@
                                 <div class="booking-confirmation__detail">
                                     <span class="booking-confirmation__detail-icon"><x-core::icon name="ti ti-calendar-event" /></span>
                                     <p class="booking-confirmation__label">{{ __('From date') }}</p>
-                                    <p class="booking-confirmation__value">{{ $bookingCar->rental_start_date->format('M d, Y · H:i') }}</p>
+                                    <p class="booking-confirmation__value">{{ $bookingCar->rental_start_date->format('M d, Y') }}</p>
                                 </div>
                                 <div class="booking-confirmation__detail">
                                     <span class="booking-confirmation__detail-icon"><x-core::icon name="ti ti-calendar-event" /></span>
                                     <p class="booking-confirmation__label">{{ __('To date') }}</p>
-                                    <p class="booking-confirmation__value">{{ $bookingCar->rental_end_date->format('M d, Y · H:i') }}</p>
+                                    <p class="booking-confirmation__value">{{ $bookingCar->rental_end_date->format('M d, Y') }}</p>
                                 </div>
                             @endif
                         </div>
