@@ -2,8 +2,9 @@
     use Carbon\Carbon;
 
     $dateFormat = 'Y-m-d'; // HTML date input format
-    $startDate = request()->query('rental_start_date', Carbon::now()->format($dateFormat));
-    $endDate = request()->query('rental_end_date', Carbon::now()->addDay()->format($dateFormat));
+    $today = Carbon::today()->format($dateFormat);
+    $startDate = request()->query('rental_start_date', $today);
+    $endDate = request()->query('rental_end_date', Carbon::today()->addDay()->format($dateFormat));
 @endphp
 
 
@@ -37,7 +38,7 @@
         <div class="col-lg-6 date-fields">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">Start Date</label>
-                <input type="date" name="rental_start_date" class="form-control" value="{{ $startDate  }}">
+                <input type="date" name="rental_start_date" class="form-control" value="{{ $startDate }}" min="{{ $today }}">
             </div>
         </div>
 
@@ -45,7 +46,7 @@
         <div class="col-lg-6 date-fields">
             <div class="form-group">
                 <label class="text-sm-medium neutral-1000">End Date</label>
-                <input type="date" name="rental_end_date" class="form-control" value="{{ $endDate  }}">
+                <input type="date" name="rental_end_date" class="form-control" value="{{ $endDate }}" min="{{ $today }}">
             </div>
         </div>
 

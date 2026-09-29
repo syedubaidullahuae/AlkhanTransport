@@ -346,6 +346,38 @@
             });
 
         });
+
+
+        (() => {
+            const applyStartDateMinimum = () => {
+                const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const minDate = [
+                    today.getFullYear(),
+                    String(today.getMonth() + 1).padStart(2, '0'),
+                    String(today.getDate()).padStart(2, '0'),
+                ].join('-');
+                const inputs = document.querySelectorAll('.calendar-date');
+
+                if (!inputs.length) {
+                    return;
+                }
+
+                inputs.forEach((input) => {
+                    input.setAttribute('min', minDate);
+
+                    if (window.jQuery && jQuery.fn.datepicker && jQuery(input).data('datepicker')) {
+                        jQuery(input).datepicker('setStartDate', today);
+                    }
+                });
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', applyStartDateMinimum);
+            } else {
+                applyStartDateMinimum();
+            }
+        })();
         
         
     </script>
