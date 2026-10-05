@@ -39,6 +39,7 @@ class FilterCarsBuilder extends BaseQueryBuilder
             'country_id' => null,
             'state_id' => null,
             'city_id' => null,
+            'car_list_shortcode_location_filter' => false,
             'car_categories' => [],
             'car_types' => [],
             'car_transmissions' => [],
@@ -248,7 +249,19 @@ class FilterCarsBuilder extends BaseQueryBuilder
         $stateId = (int) Arr::get($filters, 'state_id');
         $cityId = (int) Arr::get($filters, 'city_id');
 
-        if (is_plugin_active('location') && ($countryId || $stateId || $cityId)) {
+        if (is_plugin_active('location') && Arr::get($filters, 'car_list_shortcode_location_filter')) {
+            if ($countryId) {
+                $this->where('cr_cars.country_id', $countryId);
+            }
+
+            if ($stateId) {
+                $this->where('cr_cars.state_id', $stateId);
+            }
+
+            if ($cityId) {
+                $this->where('cr_cars.city_id', $cityId);
+            }
+        } elseif (is_plugin_active('location') && ($countryId || $stateId || $cityId)) {
             if ($cityId) {
                 // When city is selected, also match by city's state and country
                 $this->where(function ($query) use ($cityId): void {

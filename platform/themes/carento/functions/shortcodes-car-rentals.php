@@ -354,6 +354,18 @@ app()->booted(function (): void {
             function (ShortcodeCompiler $shortcode): ?string {
                 $requestQuery = CarListHelper::getCarFilters(request()->input());
 
+                $shortcodeFilters = array_filter([
+                    'country_id' => (int) $shortcode->country_id,
+                    'state_id' => (int) $shortcode->state_id,
+                    'city_id' => (int) $shortcode->city_id,
+                ], fn ($value) => $value !== 0 && $value !== '' && $value !== null);
+
+                if (array_intersect(['country_id', 'state_id', 'city_id'], array_keys($shortcodeFilters))) {
+                    $shortcodeFilters['car_list_shortcode_location_filter'] = true;
+                }
+
+                $requestQuery = array_merge($requestQuery, $shortcodeFilters);
+
                 $sortBy = $requestQuery['sort_by'] ?? 'recently_added';
 
                 /**
@@ -400,6 +412,33 @@ app()->booted(function (): void {
                     TextFieldOption::make()
                         ->label(__('Sub Title'))
                 )
+                ->when(is_plugin_active('location'), function (ShortcodeForm $form) use ($attributes): void {
+                    $form
+                        ->add(
+                            'country_id',
+                            SelectField::class,
+                            SelectFieldOption::make()
+                                ->label(__('Country'))
+                                ->choices(['' => __('All countries')] + Country::query()->wherePublished()->pluck('name', 'id')->all())
+                                ->selected(Arr::get($attributes, 'country_id'))
+                        )
+                        ->add(
+                            'state_id',
+                            SelectField::class,
+                            SelectFieldOption::make()
+                                ->label(__('State'))
+                                ->choices(['' => __('All states')] + State::query()->wherePublished()->pluck('name', 'id')->all())
+                                ->selected(Arr::get($attributes, 'state_id', 1))
+                        )
+                        ->add(
+                            'city_id',
+                            SelectField::class,
+                            SelectFieldOption::make()
+                                ->label(__('City'))
+                                ->choices(['' => __('All cities')] + City::query()->wherePublished()->pluck('name', 'id')->all())
+                                ->selected(Arr::get($attributes, 'city_id'))
+                        );
+                })
                 ->when(CarRentalsHelper::isEnabledCarFilter(), function (ShortcodeForm $form): void {
                     $form->add(
                         'enable_filter',
