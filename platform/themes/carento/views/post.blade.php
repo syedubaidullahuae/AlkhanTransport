@@ -20,6 +20,8 @@
     Theme::set('breadcrumbs', false);
     Theme::layout('full-width');
     $blogSidebar = dynamic_sidebar('blog_sidebar');
+    $blogPage = \Botble\Page\Models\Page::query()->wherePublished()->find(theme_option('blog_page_id', setting('blog_page_id')));
+    $blogUrl = $blogPage?->url ?? url('/blog');
 @endphp
 
 {!! apply_filters('ads_render', null, 'post_before', ['class' => 'mb-2']) !!}
@@ -56,17 +58,11 @@
                 </div>
             </div>
             <div class="background-body breadcrumbs position-absolute z-1 top-100 start-50 translate-middle px-3 py-2 rounded-12 border gap-3 d-none d-md-flex w-md-75">
-                @foreach (Theme::breadcrumb()->getCrumbs() as $crumb)
-                    @if (! $loop->last)
-
-                        <a href="{{ $crumb['url'] }}" title="{{ $crumb['label'] }}" class="neutral-700 text-md-medium item">{{ $crumb['label'] }}</a>
-                        <span>
-                    <img src="{{ Theme::asset()->url('images/icons/arrow-right.svg') }}" alt="Icon" />
-                </span>
-                    @else
-                        <span class="neutral-1000 text-md-bold last-item">{{ $crumb['label'] }}</span>
-                    @endif
-                @endforeach
+                <a href="{{ route('public.index') }}" title="{{ __('Home') }}" class="neutral-700 text-md-medium item">{{ __('Home') }}</a>
+                <span><img src="{{ Theme::asset()->url('images/icons/arrow-right.svg') }}" alt="Icon" /></span>
+                <a href="{{ $blogUrl }}" title="{{ __('Blog') }}" class="neutral-700 text-md-medium item">{{ __('Blog') }}</a>
+                <span><img src="{{ Theme::asset()->url('images/icons/arrow-right.svg') }}" alt="Icon" /></span>
+                <span class="neutral-1000 text-md-bold last-item">{{ $post->name }}</span>
             </div>
         </div>
     </div>

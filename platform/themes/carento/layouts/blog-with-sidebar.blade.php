@@ -1,13 +1,11 @@
 @extends(Theme::getThemeNamespace('layouts.base'))
 
 @section('content')
-    @if(Theme::get('breadcrumbs', true))
-        {!! Theme::partial('breadcrumbs') !!}
-    @endif
+   
 
     {!! Theme::get('beforeContent') !!}
 
-    {!! dynamic_sidebar('above_blog_list_sidebar') !!}
+
 
     <section class="box-section background-body">
         <div class="container">
