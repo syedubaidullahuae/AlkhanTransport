@@ -431,6 +431,59 @@ class CarForm extends FormAbstract
                 ],
             ])
             ->add(
+                'camper_specifications_divider',
+                HtmlField::class,
+                HtmlFieldOption::make()
+                    ->content('<h4>Camper specifications</h4>')
+                    ->colspan(2)
+            )
+                    ->add(
+                    'camper_capacity_divider',
+                    HtmlField::class,
+                    HtmlFieldOption::make()
+                        ->content('<h5>Passenger capacity & water</h5>')
+                        ->colspan(2)
+                    )
+            ->add('adult_passenger_capacity', NumberField::class, [
+                'label' => 'Adult passenger capacity',
+                'attr' => ['min' => 0, 'step' => 1, 'placeholder' => 'Number of adults'],
+            ])
+            ->add('child_passenger_capacity', NumberField::class, [
+                'label' => 'Child passenger capacity',
+                'attr' => ['min' => 0, 'step' => 1, 'placeholder' => 'Number of children'],
+            ])
+            ->add('fresh_water_tank_capacity', NumberField::class, [
+                'label' => 'Fresh water tank capacity (liters)',
+                'attr' => ['min' => 0, 'step' => 1, 'placeholder' => 'Capacity in liters'],
+            ])
+            ->add(
+                'camper_equipment_divider',
+                HtmlField::class,
+                HtmlFieldOption::make()
+                    ->content('<h5>Comfort, kitchen & safety</h5>')
+                    ->colspan(2)
+            )
+            ->add('has_private_shower_toilet', OnOffField::class, CheckboxFieldOption::make()->label('Private shower & toilet'))
+            ->add('has_water_heater', OnOffField::class, CheckboxFieldOption::make()->label('Water heater'))
+            ->add('has_kitchen_utensils', OnOffField::class, CheckboxFieldOption::make()->label('Complete kitchen utensils set (plates, cups, cutlery, pots, and pans)'))
+            ->add('has_stove', OnOffField::class, CheckboxFieldOption::make()->label('Kitchen stove'))
+            ->add('has_fridge', OnOffField::class, CheckboxFieldOption::make()->label('Kitchen fridge'))
+            ->add('has_sink', OnOffField::class, CheckboxFieldOption::make()->label('Kitchen sink'))
+            ->add('has_child_seatbelts', OnOffField::class, CheckboxFieldOption::make()->label('Seatbelts for kids'))
+            ->add(
+                'camper_beds_divider',
+                HtmlField::class,
+                HtmlFieldOption::make()
+                    ->content('<h5>Sleeping arrangements</h5>')
+                    ->colspan(2)
+            )
+            ->add('double_bed_dimensions', TextField::class, TextFieldOption::make()
+                ->label('1 double bed dimensions (mm)')
+                ->placeholder('1800 × 1600'))
+            ->add('single_convertible_sofa_bed_dimensions', TextField::class, TextFieldOption::make()
+                ->label('1 single convertible sofa bed dimensions (mm)')
+                ->placeholder('1800 × 1000'))
+            ->add(
                 'insurance_info',
                 TextField::class,
                 TextFieldOption::make()

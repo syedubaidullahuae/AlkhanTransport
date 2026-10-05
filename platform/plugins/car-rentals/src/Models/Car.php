@@ -75,6 +75,18 @@ class Car extends BaseModel
         'currency_id',
         'luggage_capacity',
         'monthly_rent',
+        'adult_passenger_capacity',
+        'child_passenger_capacity',
+        'fresh_water_tank_capacity',
+        'has_private_shower_toilet',
+        'has_water_heater',
+        'has_kitchen_utensils',
+        'has_stove',
+        'has_fridge',
+        'has_sink',
+        'has_child_seatbelts',
+        'double_bed_dimensions',
+        'single_convertible_sofa_bed_dimensions',
     ];
 
     protected $casts = [
@@ -87,6 +99,16 @@ class Car extends BaseModel
         'rental_rate' => 'double',
         'sale_price' => 'double',
         'horsepower' => 'double',
+        'adult_passenger_capacity' => 'integer',
+        'child_passenger_capacity' => 'integer',
+        'fresh_water_tank_capacity' => 'integer',
+        'has_private_shower_toilet' => 'boolean',
+        'has_water_heater' => 'boolean',
+        'has_kitchen_utensils' => 'boolean',
+        'has_stove' => 'boolean',
+        'has_fridge' => 'boolean',
+        'has_sink' => 'boolean',
+        'has_child_seatbelts' => 'boolean',
     ];
 
     protected $appends = [

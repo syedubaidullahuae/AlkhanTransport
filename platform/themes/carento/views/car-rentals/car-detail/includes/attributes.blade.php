@@ -99,6 +99,52 @@
                 </div>
             </div>
         @endif
+
+        @php
+            $camperSpecifications = array_values(array_filter([
+                [
+                    'label' => __('Passenger capacity'),
+                    'value' => ($car->adult_passenger_capacity || $car->child_passenger_capacity)
+                        ? __(':adults adults + :children children', ['adults' => $car->adult_passenger_capacity ?? 0, 'children' => $car->child_passenger_capacity ?? 0])
+                        : null,
+                    'icon' => 'ti ti-users-group',
+                ],
+                [
+                    'label' => __('Fresh water tank'),
+                    'value' => $car->fresh_water_tank_capacity ? __(':capacity liters', ['capacity' => $car->fresh_water_tank_capacity]) : null,
+                    'icon' => 'ti ti-droplet',
+                ],
+                ['label' => __('Private shower & toilet'), 'value' => $car->has_private_shower_toilet ? __('Included') : null, 'icon' => 'ti ti-bath'],
+                ['label' => __('Water heater'), 'value' => $car->has_water_heater ? __('Included') : null, 'icon' => 'ti ti-temperature'],
+                ['label' => __('Kitchen utensils set'), 'value' => $car->has_kitchen_utensils ? __('Included') : null, 'icon' => 'ti ti-tools-kitchen-2'],
+                [
+                    'label' => __('Fully equipped kitchen'),
+                    'value' => implode(', ', array_filter([
+                    $car->has_stove ? __('stove') : null,
+                    $car->has_fridge ? __('fridge') : null,
+                    $car->has_sink ? __('sink') : null,
+                    ])) ?: null,
+                    'icon' => 'ti ti-tools-kitchen-2',
+                ],
+                ['label' => __('Seatbelts for kids'), 'value' => $car->has_child_seatbelts ? __('Included') : null, 'icon' => 'ti ti-baby-carriage'],
+                ['label' => __('1 double bed'), 'value' => $car->double_bed_dimensions ? __(':dimensions mm', ['dimensions' => $car->double_bed_dimensions]) : null, 'icon' => 'ti ti-bed'],
+                ['label' => __('1 single convertible sofa bed'), 'value' => $car->single_convertible_sofa_bed_dimensions ? __(':dimensions mm', ['dimensions' => $car->single_convertible_sofa_bed_dimensions]) : null, 'icon' => 'ti ti-armchair'],
+            ], fn ($specification) => $specification['value'] !== null));
+        @endphp
+
+        @foreach ($camperSpecifications as $specification)
+            <div class="item-feature-car">
+                <div class="item-feature-car-inner">
+                    <div class="feature-image">
+                        <x-core::icon :name="$specification['icon']" />
+                    </div>
+                    <div class="feature-info">
+                        <p class="text-md-medium neutral-1000">{{ $specification['label'] }} <span class="text-sm neutral-700"> {{ $specification['value'] }} </span> </p>
+                        
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 </div>
 
