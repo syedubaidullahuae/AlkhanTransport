@@ -46,6 +46,15 @@ class BookingTable extends TableAbstract
 
                         return $item->customer ? $item->customer->name : '-';
                     }),
+                   FormattedColumn::make('customer_phone')
+                    ->label('Customer Phone')
+                    ->getValueUsing(function (FormattedColumn $column) {
+                        $item = $column->getItem();
+
+                            return $item->customer_phone
+                            ?? $item->customer?->phone
+                            ?? '-';
+                    }),
                 FormattedColumn::make('amount')
                     ->label(trans('plugins/car-rentals::booking.amount'))
                     ->getValueUsing(function (FormattedColumn $column) {
@@ -103,6 +112,7 @@ class BookingTable extends TableAbstract
                     ->select([
                         'id',
                         'customer_name',
+                        'customer_phone',
                         'customer_id',
                         'currency_id',
                         'payment_id',

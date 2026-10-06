@@ -62,10 +62,28 @@ class BookingController extends BaseController
     public function update(Booking $booking, UpdateBookingRequest $request)
     {
         $status = $booking->status;
+        $bookingCar = $booking->car;
+        $previousCarPrice = (float) ($bookingCar->price ?? 0);
+        $previousSubtotal = (float) $booking->sub_total;
+        $taxRate = $previousSubtotal > 0 ? (float) $booking->tax_amount / $previousSubtotal : 0;
+        $newCarPrice = (float) $request->input('amount');
 
         BookingForm::createFromModel($booking)
             ->setRequest($request)
             ->save();
+
+        $serviceAmount = max(0, $previousSubtotal - $previousCarPrice);
+        $newSubtotal = $newCarPrice + $serviceAmount;
+        $newTaxAmount = round($newSubtotal * $taxRate, 2);
+        $couponAmount = min((float) $booking->coupon_amount, $newSubtotal + $newTaxAmount);
+
+        $booking->sub_total = $newSubtotal;
+        $booking->tax_amount = $newTaxAmount;
+        $booking->coupon_amount = $couponAmount;
+        $booking->amount = round($newSubtotal + $newTaxAmount - $couponAmount, 2);
+        $booking->save();
+
+        $booking->car()->updateOrCreate([], ['price' => $newCarPrice]);
 
         if ($booking->status != $status) {
             BookingStatusChanged::dispatch($status, $booking);

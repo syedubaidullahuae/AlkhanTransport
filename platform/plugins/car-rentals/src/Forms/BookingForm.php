@@ -3,6 +3,8 @@
 namespace Botble\CarRentals\Forms;
 
 use Botble\Base\Forms\FieldOptions\StatusFieldOption;
+use Botble\Base\Forms\FieldOptions\NumberFieldOption;
+use Botble\Base\Forms\Fields\NumberField;
 use Botble\Base\Forms\Fields\SelectField;
 use Botble\Base\Forms\FormAbstract;
 use Botble\CarRentals\Enums\BookingStatusEnum;
@@ -17,6 +19,15 @@ class BookingForm extends FormAbstract
             ->model(Booking::class)
             ->setValidatorClass(UpdateBookingRequest::class)
             ->withCustomFields()
+            ->add(
+                'amount',
+                NumberField::class,
+                NumberFieldOption::make()
+                    ->label(__('Car Price'))
+                    ->value($this->getModel()->car->price ?? 0)
+                    ->min(0)
+                    ->step(0.01)
+            )
             ->add('status', SelectField::class, StatusFieldOption::make()->choices(BookingStatusEnum::labels()))
             ->setBreakFieldPoint('status')
             ->addMetaBoxes([

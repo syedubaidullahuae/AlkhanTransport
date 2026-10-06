@@ -17,14 +17,36 @@
         </x-core::datagrid.item>
 
         <x-core::datagrid.item :title="__('Email')">
-            <a href="mailto:{{ $booking->customer->email }}">{{ $booking->customer->email }}</a>
+            @if ($email = $booking->customer?->email)
+                <a href="mailto:{{ $email }}">{{ $email }}</a>
+            @else
+                -
+            @endif
         </x-core::datagrid.item>
 
-        @if ($booking->customer->phone)
-            <x-core::datagrid.item :title="__('Phone')">
-                <a href="tel:{{ $booking->customer->phone }}">{{ $booking->customer->phone }}</a>
-            </x-core::datagrid.item>
-        @endif
+        <x-core::datagrid.item :title="__('Customer Phone')">
+            @if ($customerPhone = $booking->customer?->phone)
+                <a href="tel:{{ $customerPhone }}">{{ $customerPhone }}</a>
+            @else
+                -
+            @endif
+        </x-core::datagrid.item>
+
+        <x-core::datagrid.item :title="__('Booking Email')">
+            @if ($booking->customer_email)
+                <a href="mailto:{{ $booking->customer_email }}">{{ $booking->customer_email }}</a>
+            @else
+                -
+            @endif
+        </x-core::datagrid.item>
+
+        <x-core::datagrid.item :title="__('Booking Phone')">
+            @if ($bookingPhone = $booking->customer_phone)
+                <a href="tel:{{ $bookingPhone }}">{{ $bookingPhone }}</a>
+            @else
+                -
+            @endif
+        </x-core::datagrid.item>
     </x-core::datagrid>
 
     <x-core::datagrid class="mb-4">

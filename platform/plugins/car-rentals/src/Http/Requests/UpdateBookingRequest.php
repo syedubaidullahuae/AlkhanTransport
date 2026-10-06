@@ -11,6 +11,7 @@ class UpdateBookingRequest extends Request
     public function rules(): array
     {
         return [
+            'amount' => ['required', 'numeric', 'min:0'],
             'status' => Rule::in(BookingStatusEnum::values()),
         ];
     }
