@@ -6,6 +6,7 @@ use Botble\Base\Facades\Html;
 use Botble\CarRentals\Enums\CarPurposeEnum;
 use Botble\CarRentals\Facades\CarRentalsHelper;
 use Botble\CarRentals\Models\Car;
+use Botble\CarRentals\Tables\BulkActions\CloneCarsBulkAction;
 use Botble\Table\Abstracts\TableAbstract;
 use Botble\Table\Actions\DeleteAction;
 use Botble\Table\Actions\EditAction;
@@ -79,6 +80,7 @@ class CarTable extends TableAbstract
                 return $columns;
             })
             ->addBulkActions([
+                CloneCarsBulkAction::make()->permission('car-rentals.cars.create'),
                 DeleteBulkAction::make()->permission('car-rentals.cars.destroy'),
             ])
             ->queryUsing(function (Builder $query): void {
