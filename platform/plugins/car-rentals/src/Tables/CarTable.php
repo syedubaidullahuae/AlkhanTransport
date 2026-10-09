@@ -4,9 +4,15 @@ namespace Botble\CarRentals\Tables;
 
 use Botble\Base\Facades\Html;
 use Botble\CarRentals\Enums\CarPurposeEnum;
+use Botble\CarRentals\Enums\CarStatusEnum;
+use Botble\CarRentals\Enums\ModerationStatusEnum;
 use Botble\CarRentals\Facades\CarRentalsHelper;
 use Botble\CarRentals\Models\Car;
+use Botble\CarRentals\Models\CarMake;
 use Botble\CarRentals\Tables\BulkActions\CloneCarsBulkAction;
+use Botble\Location\Models\City;
+use Botble\Location\Models\Country;
+use Botble\Location\Models\State;
 use Botble\Table\Abstracts\TableAbstract;
 use Botble\Table\Actions\DeleteAction;
 use Botble\Table\Actions\EditAction;
@@ -83,6 +89,17 @@ class CarTable extends TableAbstract
                 CloneCarsBulkAction::make()->permission('car-rentals.cars.create'),
                 DeleteBulkAction::make()->permission('car-rentals.cars.destroy'),
             ])
+            ->onFilterQuery(function (Builder $query, string $key, string $operator, ?string $value) {
+                if ($key !== 'car_purpose') {
+                    return null;
+                }
+
+                if (! in_array($value, [CarPurposeEnum::FOR_SALE, CarPurposeEnum::FOR_RENT], true)) {
+                    return $query->whereRaw('1 = 0');
+                }
+
+                return $query->where('is_for_sale', $value === CarPurposeEnum::FOR_SALE);
+            })
             ->queryUsing(function (Builder $query): void {
                 $query
                     ->select([
@@ -104,5 +121,63 @@ class CarTable extends TableAbstract
                     ])
                     ->with('make');
             });
+    }
+
+    public function getFilters(): array
+    {
+        $filters = [
+            'name' => [
+                'title' => trans('core/base::tables.name'),
+                'type' => 'text',
+            ],
+            'license_plate' => [
+                'title' => trans('plugins/car-rentals::car-rentals.car.forms.license_plate'),
+                'type' => 'text',
+            ],
+            'make_id' => [
+                'title' => trans('plugins/car-rentals::car-rentals.car.forms.make'),
+                'type' => 'select',
+                'choices' => ['' => trans('core/base::tables.all')] + CarMake::query()->orderBy('name')->pluck('name', 'id')->all(),
+            ],
+            'country_id' => [
+                'title' => trans('plugins/location::city.country'),
+                'type' => 'select-search',
+                'choices' => ['' => trans('core/base::tables.all')] + Country::query()->orderBy('name')->pluck('name', 'id')->all(),
+            ],
+            'state_id' => [
+                'title' => trans('plugins/location::city.state'),
+                'type' => 'select-search',
+                'choices' => ['' => trans('core/base::tables.all')] + State::query()->orderBy('name')->pluck('name', 'id')->all(),
+            ],
+            'city_id' => [
+                'title' => trans('plugins/location::city.city'),
+                'type' => 'select-search',
+                'choices' => ['' => trans('core/base::tables.all')] + City::query()->orderBy('name')->pluck('name', 'id')->all(),
+            ],
+            'year' => [
+                'title' => trans('plugins/car-rentals::car-rentals.car.forms.year'),
+                'type' => 'number',
+            ],
+            'car_purpose' => [
+                'title' => trans('plugins/car-rentals::car-rentals.car.forms.car_purpose'),
+                'type' => 'select',
+                'choices' => ['' => trans('core/base::tables.all')] + CarPurposeEnum::labels(),
+            ],
+            'status' => [
+                'title' => trans('core/base::tables.status'),
+                'type' => 'select',
+                'choices' => ['' => trans('core/base::tables.all')] + CarStatusEnum::labels(),
+            ],
+        ];
+
+        if (CarRentalsHelper::isEnabledPostApproval()) {
+            $filters['moderation_status'] = [
+                'title' => trans('plugins/car-rentals::car-rentals.car.forms.moderation_status'),
+                'type' => 'select',
+                'choices' => ['' => trans('core/base::tables.all')] + ModerationStatusEnum::labels(),
+            ];
+        }
+
+        return $filters;
     }
 }
