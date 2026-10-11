@@ -39,6 +39,7 @@
                         'layoutCol' => $layoutCol,
                         'enableFilter' => $enableFilter,
                         'renderAsOffcanvas' => $isMobileDevice,
+                        'locationFilters' => $locationFilters,
                     ])
                 )
 
@@ -48,6 +49,7 @@
                         'layoutCol' => $layoutCol,
                         'enableFilter' => $enableFilter,
                         'renderAsOffcanvas' => $isMobileDevice,
+                        'locationFilters' => $locationFilters,
                     ])
                 @endif
             </div>

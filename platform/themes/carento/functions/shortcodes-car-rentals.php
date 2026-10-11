@@ -365,6 +365,12 @@ app()->booted(function (): void {
                 }
 
                 $requestQuery = array_merge($requestQuery, $shortcodeFilters);
+                $locationFilters = Arr::only($requestQuery, [
+                    'country_id',
+                    'state_id',
+                    'city_id',
+                    'car_list_shortcode_location_filter',
+                ]);
 
                 $sortBy = $requestQuery['sort_by'] ?? 'recently_added';
 
@@ -393,7 +399,7 @@ app()->booted(function (): void {
 
                 return Theme::partial(
                     'shortcodes.car-list.index',
-                    compact('shortcode', 'cars', 'perPages')
+                    compact('shortcode', 'cars', 'perPages', 'locationFilters')
                 );
             }
         );
