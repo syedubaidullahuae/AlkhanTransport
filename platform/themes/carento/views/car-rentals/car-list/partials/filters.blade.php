@@ -1,5 +1,12 @@
 @php
-    [$carCategories, $carColors, $carTypes, $carTransmissions, $carFuelTypes, $carReviewScores, $carMaxRentalRate, $carAmenities, $advancedTypes, $carMaxHorsepower, $carMakes, $seatOptions, $doorOptions, $carMinYear, $carMaxYear, $carMaxMileage, $rentalTypes, $allLocations] = CarListHelper::dataForFilter(request()->input());
+    $filterLocation = array_merge([
+        'country_id' => (int) request()->input('country_id', 0),
+        'state_id' => (int) request()->input('state_id', 0),
+        'city_id' => (int) request()->input('city_id', 0),
+        'car_list_shortcode_location_filter' => (bool) request()->input('car_list_shortcode_location_filter', false),
+    ], $locationFilters ?? []);
+    $selectedCityId = (int) ($filterLocation['city_id'] ?? 0);
+    [$carCategories, $carColors, $carTypes, $carTransmissions, $carFuelTypes, $carReviewScores, $carMaxRentalRate, $carAmenities, $advancedTypes, $carMaxHorsepower, $carMakes, $seatOptions, $doorOptions, $carMinYear, $carMaxYear, $carMaxMileage, $rentalTypes, $allLocations] = CarListHelper::dataForFilter($filterLocation);
 
    $layout = BaseHelper::stringify(request()->query('layout'));
 

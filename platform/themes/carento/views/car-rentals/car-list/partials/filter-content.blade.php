@@ -5,7 +5,7 @@
 @if(CarRentalsHelper::isEnabledFilterCarsBy('locations') && is_plugin_active('location'))
     @php
         $selectedLocation = BaseHelper::stringify(request()->input('location', ''));
-        $selectedCityId = BaseHelper::stringify(request()->input('city_id', ''));
+        $selectedCityId = BaseHelper::stringify($locationFilters['city_id'] ?? request()->input('city_id', ''));
     @endphp
     <div class="filter-widget mb-4" style="overflow: unset !important;">
         <div class="filter-widget-header">

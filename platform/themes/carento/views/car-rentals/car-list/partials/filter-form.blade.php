@@ -13,7 +13,6 @@
     <input type="hidden" name="end_date" value="{{ BaseHelper::stringify(request()->query('end_date')) }}" />
     <input type="hidden" name="country_id" value="{{ $locationFilters['country_id'] ?? request()->input('country_id', 0) }}" />
     <input type="hidden" name="state_id" value="{{ $locationFilters['state_id'] ?? request()->input('state_id', 0) }}" />
-    <input type="hidden" name="city_id" value="{{ $locationFilters['city_id'] ?? request()->input('city_id', 0) }}" />
     <input type="hidden" name="car_list_shortcode_location_filter" value="{{ (int) ($locationFilters['car_list_shortcode_location_filter'] ?? request()->input('car_list_shortcode_location_filter', false)) }}" />
 
     @include(Theme::getThemeNamespace('views.car-rentals.car-list.partials.filter-content'), ['formId' => $formId])

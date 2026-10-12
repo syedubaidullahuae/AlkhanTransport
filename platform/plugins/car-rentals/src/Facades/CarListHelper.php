@@ -6,7 +6,7 @@ use Botble\CarRentals\Supports\CarListHelper as CarListHelperSupport;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static array dataForFilter()
+ * @method static array dataForFilter(array|int|null $locationFilters = null)
  * @method static array getCarFilters(\Illuminate\Http\Request|array $inputs)
  * @method static \Illuminate\Database\Eloquent\Collection carCategoriesForFilter()
  * @method static \Illuminate\Database\Eloquent\Collection carColorsForFilter()

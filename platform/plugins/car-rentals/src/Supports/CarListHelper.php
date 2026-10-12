@@ -3,6 +3,7 @@
 namespace Botble\CarRentals\Supports;
 
 use Botble\Base\Facades\BaseHelper;
+use Botble\CarRentals\Enums\CarRentalTypeEnum;
 use Botble\CarRentals\Enums\CarStatusEnum;
 use Botble\CarRentals\Facades\CarRentalsHelper as CarRentalsHelperFacade;
 use Botble\CarRentals\Models\Car;
@@ -14,7 +15,9 @@ use Botble\CarRentals\Models\CarMake;
 use Botble\CarRentals\Models\CarReview;
 use Botble\CarRentals\Models\CarTransmission;
 use Botble\CarRentals\Models\CarType;
+use Botble\Location\Models\City;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -25,28 +28,33 @@ use Illuminate\Validation\Rule;
 
 class CarListHelper
 {
-    public function dataForFilter(): array
+    public function dataForFilter(array|int|null $locationFilters = null): array
     {
+        if (is_int($locationFilters)) {
+            $locationFilters = ['city_id' => $locationFilters];
+        }
+
+        $locationFilters = $locationFilters ?? [];
         $collectionEmpty = new Collection();
 
         return [
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('categories') ? $this->carCategoriesForFilter() : $collectionEmpty,
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('colors') ? $this->carColorsForFilter() : $collectionEmpty,
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('types') ? $this->carTypesForFilter() : $collectionEmpty,
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('transmissions') ? $this->carTransmissionsForFilter() : $collectionEmpty,
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('fuels') ? $this->carFuelTypesForFilter() : $collectionEmpty,
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('review_scores') ? $this->carReviewScoresForFilter() : $collectionEmpty,
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('prices') ? $this->getCarMaxRentalRate() : null,
-            $this->carAmenitiesForFilter(),
-            $this->getAdvancedTypes(),
-            CarRentalsHelperFacade::isEnabledFilterCarsBy('horsepower') ? $this->getCarMaxHorsepower() : null,
-            $this->carMakesForFilter(),
-            $this->getSeatOptions(),
-            $this->getDoorOptions(),
-            $this->getCarMinYear(),
-            $this->getCarMaxYear(),
-            $this->getCarMaxMileage(),
-            CarRentalsHelperFacade::isRentalBookingEnabled() ? $this->getRentalTypes() : [],
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('categories') ? $this->carCategoriesForFilter($locationFilters) : $collectionEmpty,
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('colors') ? $this->carColorsForFilter($locationFilters) : $collectionEmpty,
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('types') ? $this->carTypesForFilter($locationFilters) : $collectionEmpty,
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('transmissions') ? $this->carTransmissionsForFilter($locationFilters) : $collectionEmpty,
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('fuels') ? $this->carFuelTypesForFilter($locationFilters) : $collectionEmpty,
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('review_scores') ? $this->carReviewScoresForFilter($locationFilters) : $collectionEmpty,
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('prices') ? $this->getCarMaxRentalRate($locationFilters) : null,
+            $this->carAmenitiesForFilter($locationFilters),
+            $this->getAdvancedTypes($locationFilters),
+            CarRentalsHelperFacade::isEnabledFilterCarsBy('horsepower') ? $this->getCarMaxHorsepower($locationFilters) : null,
+            $this->carMakesForFilter($locationFilters),
+            $this->getSeatOptions($locationFilters),
+            $this->getDoorOptions($locationFilters),
+            $this->getCarMinYear($locationFilters),
+            $this->getCarMaxYear($locationFilters),
+            $this->getCarMaxMileage($locationFilters),
+            CarRentalsHelperFacade::isRentalBookingEnabled() ? $this->getRentalTypes($locationFilters) : [],
             CarRentalsHelperFacade::isEnabledFilterCarsBy('locations') ? $this->getAllLocations() : [],
         ];
     }
@@ -146,12 +154,14 @@ class CarListHelper
         return $validator->valid();
     }
 
-    public function carCategoriesForFilter(): Collection
+    public function carCategoriesForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_categories_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_categories_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarCategory::query()
                 ->wherePublished()
-                ->withCount('activeCars as cars_count')
+                ->withCount([
+                    'activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters),
+                ])
                 ->latest('cars_count')
                 ->latest()
                 ->get()
@@ -159,12 +169,12 @@ class CarListHelper
         });
     }
 
-    public function carColorsForFilter(): Collection
+    public function carColorsForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_colors_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_colors_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarColor::query()
                 ->wherePublished()
-                ->withCount('activeCars as cars_count')
+                ->withCount(['activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters)])
                 ->latest('cars_count')
                 ->latest()
                 ->get()
@@ -172,35 +182,24 @@ class CarListHelper
         });
     }
 
-    public function carTypesForFilter(): Collection
+    public function carTypesForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_types_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_types_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarType::query()
                 ->wherePublished()
-                ->withCount('activeCars as cars_count')
+                ->withCount(['activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters)])
                 ->latest('cars_count')->latest()
-                ->get();
+                ->get()
+                ->where('cars_count', '>', 0);
         });
     }
 
-    public function carTransmissionsForFilter(): Collection
+    public function carTransmissionsForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_transmissions_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_transmissions_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarTransmission::query()
                 ->wherePublished()
-                ->withCount('activeCars as cars_count')
-                ->latest('cars_count')
-                ->latest()
-                ->get();
-        });
-    }
-
-    public function carFuelTypesForFilter(): Collection
-    {
-        return Cache::remember('car_list_fuels_filter', Carbon::now()->addHour(), function (): Collection {
-            return CarFuel::query()
-                ->wherePublished()
-                ->withCount('activeCars as cars_count')
+                ->withCount(['activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters)])
                 ->latest('cars_count')
                 ->latest()
                 ->get()
@@ -208,20 +207,37 @@ class CarListHelper
         });
     }
 
-    public function carReviewScoresForFilter(): Collection
+    public function carFuelTypesForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_review_scores_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_fuels_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
+            return CarFuel::query()
+                ->wherePublished()
+                ->withCount(['activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters)])
+                ->latest('cars_count')
+                ->latest()
+                ->get()
+                ->where('cars_count', '>', 0);
+        });
+    }
+
+    public function carReviewScoresForFilter(array $locationFilters = []): Collection
+    {
+        return Cache::remember('car_list_review_scores_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarReview::query()
                 ->select('star', DB::raw('count(*) as cars_count'))
+                ->whereHas('car', function (Builder $query) use ($locationFilters): void {
+                    $this->applyLocationFilters($query, $locationFilters)
+                        ->where('status', CarStatusEnum::AVAILABLE);
+                })
                 ->groupBy('star')->latest('star')
                 ->get();
         });
     }
 
-    public function getCarMaxRentalRate(): int
+    public function getCarMaxRentalRate(array $locationFilters = []): int
     {
-        return Cache::remember('car_list_car_max_rental_rate', Carbon::now()->addHour(), function (): int {
-            $rentalRate = Car::query()
+        return Cache::remember('car_list_car_max_rental_rate.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): int {
+            $rentalRate = $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->max('rental_rate');
 
@@ -229,10 +245,10 @@ class CarListHelper
         });
     }
 
-    public function getCarMaxHorsepower(): int
+    public function getCarMaxHorsepower(array $locationFilters = []): int
     {
-        return Cache::remember('car_list_car_max_horsepower', Carbon::now()->addHour(), function (): int {
-            $horsepower = Car::query()
+        return Cache::remember('car_list_car_max_horsepower.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): int {
+            $horsepower = $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->whereNotNull('horsepower')
                 ->max('horsepower');
@@ -256,43 +272,55 @@ class CarListHelper
         ]);
     }
 
-    public function getAdvancedTypes(): array
+    public function getAdvancedTypes(array $locationFilters = []): array
     {
-        return [
-            'all' => __('All'),
-            'new_car' => __('New'),
-            'used_car' => __('Used'),
-        ];
+        $types = ['all' => __('All')];
+        $usedValues = $this->locationScopedCars($locationFilters)
+            ->whereIn('is_used', [0, 1])
+            ->distinct()
+            ->pluck('is_used')
+            ->map(fn ($value) => (int) $value)
+            ->all();
+
+        if (in_array(0, $usedValues, true)) {
+            $types['new_car'] = __('New');
+        }
+
+        if (in_array(1, $usedValues, true)) {
+            $types['used_car'] = __('Used');
+        }
+
+        return $types;
     }
 
-    public function carAmenitiesForFilter(): Collection
+    public function carAmenitiesForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_amenities_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_amenities_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarAmenity::query()
                 ->wherePublished()
-                ->withCount('activeCars as cars_count')
+                ->withCount(['activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters)])
                 ->latest('cars_count')->latest()
                 ->get()
                 ->where('cars_count', '>', 0);
         });
     }
 
-    public function carMakesForFilter(): Collection
+    public function carMakesForFilter(array $locationFilters = []): Collection
     {
-        return Cache::remember('car_list_makes_filter', Carbon::now()->addHour(), function (): Collection {
+        return Cache::remember('car_list_makes_filter.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): Collection {
             return CarMake::query()
                 ->wherePublished()
-                ->withCount('activeCars as cars_count')
+                ->withCount(['activeCars as cars_count' => fn (Builder $query) => $this->applyLocationFilters($query, $locationFilters)])
                 ->latest('cars_count')->latest()
                 ->get()
                 ->where('cars_count', '>', 0);
         });
     }
 
-    public function getSeatOptions(): array
+    public function getSeatOptions(array $locationFilters = []): array
     {
-        return Cache::remember('car_list_seat_options', Carbon::now()->addHour(), function (): array {
-            return Car::query()
+        return Cache::remember('car_list_seat_options.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): array {
+            return $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->whereNotNull('number_of_seats')
                 ->selectRaw('number_of_seats, COUNT(*) as count')
@@ -303,10 +331,10 @@ class CarListHelper
         });
     }
 
-    public function getDoorOptions(): array
+    public function getDoorOptions(array $locationFilters = []): array
     {
-        return Cache::remember('car_list_door_options', Carbon::now()->addHour(), function (): array {
-            return Car::query()
+        return Cache::remember('car_list_door_options.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): array {
+            return $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->whereNotNull('number_of_doors')
                 ->selectRaw('number_of_doors, COUNT(*) as count')
@@ -317,10 +345,10 @@ class CarListHelper
         });
     }
 
-    public function getCarMinYear(): int
+    public function getCarMinYear(array $locationFilters = []): int
     {
-        return Cache::remember('car_list_car_min_year', Carbon::now()->addHour(), function (): int {
-            $year = Car::query()
+        return Cache::remember('car_list_car_min_year.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): int {
+            $year = $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->whereNotNull('year')
                 ->min('year');
@@ -329,10 +357,10 @@ class CarListHelper
         });
     }
 
-    public function getCarMaxYear(): int
+    public function getCarMaxYear(array $locationFilters = []): int
     {
-        return Cache::remember('car_list_car_max_year', Carbon::now()->addHour(), function (): int {
-            $year = Car::query()
+        return Cache::remember('car_list_car_max_year.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): int {
+            $year = $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->whereNotNull('year')
                 ->max('year');
@@ -341,10 +369,10 @@ class CarListHelper
         });
     }
 
-    public function getCarMaxMileage(): int
+    public function getCarMaxMileage(array $locationFilters = []): int
     {
-        return Cache::remember('car_list_car_max_mileage', Carbon::now()->addHour(), function (): int {
-            $mileage = Car::query()
+        return Cache::remember('car_list_car_max_mileage.' . $this->locationCacheKey($locationFilters), Carbon::now()->addHour(), function () use ($locationFilters): int {
+            $mileage = $this->locationScopedCars($locationFilters)
                 ->where('status', CarStatusEnum::AVAILABLE)
                 ->whereNotNull('mileage')
                 ->max('mileage');
@@ -353,18 +381,102 @@ class CarListHelper
         });
     }
 
-    public function getRentalTypes(): array
+    public function getRentalTypes(array $locationFilters = []): array
     {
-        return [
+        $types = [
             'per_hour' => __('Per Hour'),
             'per_day' => __('Per Day'),
             'per_week' => __('Per Week'),
             'per_month' => __('Per Month'),
         ];
+
+        $availableTypes = $this->locationScopedCars($locationFilters)
+            ->whereNotNull('rental_type')
+            ->distinct()
+            ->pluck('rental_type')
+            ->map(fn ($type) => $type instanceof CarRentalTypeEnum ? $type->getValue() : $type)
+            ->filter(fn ($type) => is_string($type) || is_int($type))
+            ->all();
+
+        return Arr::only($types, $availableTypes);
     }
 
     public function getAllLocations(): array
     {
         return CarRentalsHelperFacade::getLocations();
+    }
+
+    private function locationCacheKey(array $locationFilters): string
+    {
+        return implode('-', [
+            (int) Arr::get($locationFilters, 'country_id', 0),
+            (int) Arr::get($locationFilters, 'state_id', 0),
+            (int) Arr::get($locationFilters, 'city_id', 0),
+            (int) Arr::get($locationFilters, 'car_list_shortcode_location_filter', 0),
+        ]);
+    }
+
+    private function locationScopedCars(array $locationFilters): Builder
+    {
+        return $this->applyLocationFilters(
+            Car::query()->where('status', CarStatusEnum::AVAILABLE),
+            $locationFilters
+        );
+    }
+
+    private function applyLocationFilters(Builder $query, array $locationFilters): Builder
+    {
+        if (! is_plugin_active('location')) {
+            return $query;
+        }
+
+        $countryId = (int) Arr::get($locationFilters, 'country_id', 0);
+        $stateId = (int) Arr::get($locationFilters, 'state_id', 0);
+        $cityId = (int) Arr::get($locationFilters, 'city_id', 0);
+
+        if (Arr::get($locationFilters, 'car_list_shortcode_location_filter')) {
+            if ($countryId) {
+                $query->where('cr_cars.country_id', $countryId);
+            }
+
+            if ($stateId) {
+                $query->where('cr_cars.state_id', $stateId);
+            }
+
+            if ($cityId) {
+                $query->where('cr_cars.city_id', $cityId);
+            }
+
+            return $query;
+        }
+
+        if ($cityId) {
+            $city = City::query()->find($cityId);
+
+            return $query->where(function (Builder $locationQuery) use ($cityId, $city): void {
+                $locationQuery->where('cr_cars.city_id', $cityId);
+
+                if ($city) {
+                    $locationQuery->orWhere(function (Builder $fallbackQuery) use ($city): void {
+                        $fallbackQuery->whereNull('cr_cars.city_id')
+                            ->where('cr_cars.state_id', $city->state_id);
+                    })->orWhere(function (Builder $fallbackQuery) use ($city): void {
+                        $fallbackQuery->whereNull('cr_cars.city_id')
+                            ->whereNull('cr_cars.state_id')
+                            ->where('cr_cars.country_id', $city->country_id);
+                    });
+                }
+            });
+        }
+
+        if ($stateId) {
+            return $query->where('cr_cars.state_id', $stateId);
+        }
+
+        if ($countryId) {
+            return $query->where('cr_cars.country_id', $countryId);
+        }
+
+        return $query;
     }
 }
