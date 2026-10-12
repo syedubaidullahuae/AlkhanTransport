@@ -45,6 +45,20 @@
                             {{ $category->badge_with_count }}
                         @endif
 
+                        @if (($canDuplicate ?? false) && ($duplicateRoute ?? null))
+                            <form method="POST" action="{{ route($duplicateRoute, $category->id) }}" class="d-inline ms-2">
+                                @csrf
+                                <x-core::button
+                                    type="submit"
+                                    size="sm"
+                                    class="delete-button duplicate-button"
+                                    icon="ti ti-copy"
+                                    :icon-only="true"
+                                    :tooltip="trans('plugins/car-rentals::car-rentals.attribute.category.duplicate')"
+                                />
+                            </form>
+                        @endif
+
                         @if ($canDelete)
                             <span
                                 data-bs-toggle="modal"

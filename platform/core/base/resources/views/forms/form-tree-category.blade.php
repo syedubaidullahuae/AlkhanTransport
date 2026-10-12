@@ -10,6 +10,8 @@
         $createRoute = $form->getFormOption('createRoute');
         $editRoute = $form->getFormOption('editRoute');
         $deleteRoute = $form->getFormOption('deleteRoute');
+        $duplicateRoute = $form->getFormOption('duplicateRoute');
+        $canDuplicate = $form->getFormOption('canDuplicate', false);
         $updateTreeRoute = $form->getFormOption('updateTreeRoute');
 
         Assets::addStyles('jquery-nestable')->addScripts('jquery-nestable');

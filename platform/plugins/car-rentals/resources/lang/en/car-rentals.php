@@ -308,6 +308,7 @@ return [
             'create' => 'Create Tag',
         ],
         'category' => [
+            'duplicate' => 'Duplicate category',
             'name' => 'Categories',
             'create' => 'Create Category',
             'forms' => [

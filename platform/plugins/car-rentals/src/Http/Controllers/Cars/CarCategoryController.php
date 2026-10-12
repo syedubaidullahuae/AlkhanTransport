@@ -12,7 +12,10 @@ use Botble\Base\Supports\RepositoryHelper;
 use Botble\CarRentals\Forms\CarCategoryForm;
 use Botble\CarRentals\Http\Requests\CarCategoryRequest;
 use Botble\CarRentals\Models\CarCategory;
+use Botble\Slug\Facades\SlugHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CarCategoryController extends BaseController
 {
@@ -150,6 +153,24 @@ class CarCategoryController extends BaseController
             ->withUpdatedSuccessMessage();
     }
 
+    public function duplicate(CarCategory $carCategory): BaseHttpResponse
+    {
+        DB::transaction(function () use ($carCategory): void {
+            $copy = $carCategory->replicate();
+            $copy->setRelations([]);
+            $copy->name = Str::limit($carCategory->name, 113, '') . ' (Copy)';
+            $copy->is_default = false;
+            $copy->save();
+
+            SlugHelper::createSlug($copy);
+        });
+
+        return $this->httpResponse()
+            ->setPreviousUrl(route('car-rentals.car-categories.index'))
+            ->setNextUrl(route('car-rentals.car-categories.index'))
+            ->withCreatedSuccessMessage();
+    }
+
     public function destroy(CarCategory $carCategory): DeleteResourceAction
     {
         return DeleteResourceAction::make($carCategory);
@@ -181,6 +202,8 @@ class CarCategoryController extends BaseController
             'canCreate' => true,
             'canEdit' => true,
             'canDelete' => true,
+            'canDuplicate' => auth()->user()->hasPermission('car-rentals.car-categories.create'),
+            'duplicateRoute' => 'car-rentals.car-categories.duplicate',
             'createRoute' => 'car-rentals.car-categories.create',
             'editRoute' => 'car-rentals.car-categories.edit',
             'deleteRoute' => 'car-rentals.car-categories.destroy',

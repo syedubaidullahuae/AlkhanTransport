@@ -171,6 +171,12 @@ Route::group(['namespace' => 'Botble\CarRentals\Http\Controllers'], function ():
             Route::resource('car-maintenance-histories', 'Cars\CarMaintenanceHistoryController')->parameters(['' => 'car-maintenance-histories']);
 
             Route::group(['prefix' => 'car-categories', 'as' => 'car-categories.'], function (): void {
+                Route::post('{carCategory}/duplicate', [
+                    'as' => 'duplicate',
+                    'uses' => 'Cars\CarCategoryController@duplicate',
+                    'permission' => 'car-rentals.car-categories.create',
+                ])->wherePrimaryKey();
+
                 Route::resource('', 'Cars\CarCategoryController')->parameters(['' => 'carCategory']);
                 Route::put('update-tree', [
                     'as' => 'update-tree',
