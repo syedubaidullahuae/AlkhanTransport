@@ -200,6 +200,7 @@ class PublicController extends BaseController
         $meta->setType('article');
 
         SeoHelper::setSeoOpenGraph($meta);
+        SeoHelper::meta()->setUrl($car->url);
 
         Theme::breadcrumb()
             ->add(__('Home'), route('public.index'))
@@ -1362,6 +1363,7 @@ class PublicController extends BaseController
         // ✅ SEO
         SeoHelper::setTitle($category->name);
         SeoHelper::setDescription("Browse cars in " . $category->name);
+        SeoHelper::meta()->setUrl($category->url);
 
         do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, CAR_RENTALS_MODULE_SCREEN_NAME, $category);
 
