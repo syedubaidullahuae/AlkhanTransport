@@ -122,6 +122,14 @@ class GeneralSettingForm extends SettingForm
                     ->helperText(trans('plugins/car-rentals::settings.general.forms.enabled_car_rental_helper'))
             )
             ->add(
+                'append_city_to_permalink',
+                OnOffCheckboxField::class,
+                OnOffFieldOption::make()
+                    ->value(get_car_rentals_setting('append_city_to_permalink', false))
+                    ->label(trans('plugins/car-rentals::settings.general.forms.append_city_to_permalink'))
+                    ->helperText(trans('plugins/car-rentals::settings.general.forms.append_city_to_permalink_helper'))
+            )
+            ->add(
                 'enabled_car_price',
                 OnOffCheckboxField::class,
                 OnOffFieldOption::make()

@@ -187,8 +187,6 @@ class SlugHelper
         
         $prefix = setting($this->getPermalinkSettingKey($model));
 
-        dd($prefix);
-
         if ($prefix === null) {
             $this->dispatchRegistering();
 

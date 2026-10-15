@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,6 +36,20 @@ class HookServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        add_filter('cms_slug_prefix', function (string $prefix, $model): string {
+            if (! get_car_rentals_setting('append_city_to_permalink', false) || ! ($model instanceof Car)) {
+                return $prefix;
+            }
+
+            $city = $model->city;
+
+            if (! $city || ! $city->slug) {
+                return $prefix;
+            }
+
+            return rtrim($prefix, '-') . '-in-' . Str::slug($city->slug);
+        }, 20, 2);
+
         add_filter('ecommerce_invoice_templates', function (array $templates): array {
             $generateWithdrawalInvoiceService = new GeneratePayoutInvoiceService();
 

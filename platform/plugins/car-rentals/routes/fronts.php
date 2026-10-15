@@ -14,10 +14,17 @@ use Illuminate\Support\Facades\Route;
 
 if (defined('THEME_MODULE_SCREEN_NAME')) {
     Theme::registerRoutes(function (): void {
-        Route::get(SlugHelper::getPrefix(Car::class, 'cars') . '/{slug}', [PublicController::class, 'getCar']);
+        $carPrefix = SlugHelper::getPrefix(Car::class, 'cars');
+
+        if (get_car_rentals_setting('append_city_to_permalink', false)) {
+            Route::get($carPrefix . '-in-{city}/{slug}', [PublicController::class, 'getCarByCity']);
+           // Route::get($carPrefix . '-in-{city}', [PublicController::class, 'getCarsByCity']);
+        }
+
+        Route::get($carPrefix . '/{slug}', [PublicController::class, 'getCar']);
         Route::get('booking/external/{slug}', [PublicController::class, 'redirectToExternalBooking'])->name('public.car.external-booking');
         Route::get(SlugHelper::getPrefix(Service::class, 'services') . '/{slug}', [PublicController::class, 'getService']);
-        Route::get(SlugHelper::getPrefix(Car::class, 'cars'), [PublicController::class, 'getCars'])->name('public.cars');
+        Route::get($carPrefix, [PublicController::class, 'getCars'])->name('public.cars');
         Route::get('ajax/cars', [PublicController::class, 'ajaxGetCars'])->name('public.ajax.cars');
         Route::get('ajax/car-makes', [PublicController::class, 'ajaxGetCarsMake'])->name('public.ajax.car_makes');
         Route::get('ajax/locations', [PublicController::class, 'ajaxGetLocation'])->name('public.ajax.locations');

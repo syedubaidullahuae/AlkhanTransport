@@ -58,6 +58,8 @@ class PublicController extends BaseController
 {
     public function getCars(Request $request)
     {
+        $cityId = $request->attributes->get('car_city_filter_id');
+
         $page = (int) request()->get('page', 0);
 
         SeoHelper::setTitle(
@@ -76,7 +78,7 @@ class PublicController extends BaseController
         }
         Theme::breadcrumb()
             ->add(__('Home'), route('public.index'))
-            ->add(__('Cars'), route('public.cars'));
+            ->add(__('Cars'), $cityId ? url()->current() : route('public.cars'));
 
         $request->validate([
             'pickup_location' => ['nullable', 'exists:states,id'],
@@ -92,6 +94,10 @@ class PublicController extends BaseController
         $endDate = $request->filled('rental_end_date') ? CarRentalsHelper::dateFromRequest($request->input('rental_end_date')) : null;
 
         $query = Car::query()->active();
+
+        if ($cityId) {
+            $query->where('city_id', $cityId);
+        }
 
         if ($startDate && $endDate) {
             $query->whereAvailableAt([
@@ -117,6 +123,23 @@ class PublicController extends BaseController
             ->paginate(CarRentalsHelper::getCarsPerPage());
 
         return Theme::scope('car-rentals.cars', compact('cars'), 'plugins/car-rentals::themes.cars')->render();
+    }
+
+    public function getCarsByCity(Request $request, string $city)
+    {
+        $city = City::query()->where('slug', $city)->firstOrFail();
+        $request->attributes->set('car_city_filter_id', $city->getKey());
+
+        return $this->getCars($request);
+    }
+
+    public function getCarByCity(string $city, string $slug)
+    {
+        $slugRecord = SlugHelper::getSlug($slug, SlugHelper::getPrefix(Car::class));
+
+        abort_unless($slugRecord && $slugRecord->reference?->city?->slug === $city, 404);
+
+        return $this->getCar($slug);
     }
 
     public function getCar(string $slug)

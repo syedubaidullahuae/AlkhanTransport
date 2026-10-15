@@ -18,7 +18,7 @@
     }
 
     if ($query) {
-        $carUrl = $car->url . '?' . http_build_query($query);
+        $carUrl .= '?' . http_build_query($query);
     }
 @endphp
 <div class="col-xl-12 col-lg-12">

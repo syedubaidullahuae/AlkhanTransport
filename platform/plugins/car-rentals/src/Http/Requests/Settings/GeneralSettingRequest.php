@@ -16,6 +16,7 @@ class GeneralSettingRequest extends Request
             'enabled_multi_vendor' => $onOffRule = new OnOffRule(),
             'enable_post_approval' => $onOffRule,
             'enabled_car_rental' => $onOffRule,
+            'append_city_to_permalink' => $onOffRule,
             'enabled_car_sale' => $onOffRule,
             'enabled_car_price' => $onOffRule,
             'booking_number_prefix' => ['nullable', 'string'],

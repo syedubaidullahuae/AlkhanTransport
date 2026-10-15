@@ -16,6 +16,8 @@ return [
             'enabled_car_rental_feature_helper' => 'When it is enabled, the car rental booking feature will be available on the website.',
             'enabled_car_rental' => 'Enable car rental',
             'enabled_car_rental_helper' => 'When it is enabled, cars can be listed for rental.',
+            'append_city_to_permalink' => 'Append city to car permalinks',
+            'append_city_to_permalink_helper' => 'When enabled, car URLs use the format /fleets-in-dubai/car-slug. Set the Cars prefix under Settings → Permalink (for example, fleets).',
             'enabled_post_approval' => 'Enable post approval?',
             'enabled_post_approval_helper' => 'When it is enabled, cars which posted by a vendor will need to be approved by an admin before they are published and display on your site.',
             'enabled_car_sale' => 'Enable car sale',
